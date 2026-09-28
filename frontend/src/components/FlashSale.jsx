@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 function FlashSale() {
   const[time,setTime]=useState({
-    hours:0,
+    hours:2,
     minutes:50,
     seconds:13,
   });

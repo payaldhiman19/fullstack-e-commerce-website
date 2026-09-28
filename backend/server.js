@@ -6,7 +6,6 @@ const productRoutes = require("./routes/productRoutes");
 const authRoutes = require("./routes/authRoutes");
 const app=express();
 app.use(cors());
-app.use("/api/auth", authRoutes);
 app.use(express.json());
 connectDB();
 app.get("/",(req,res)=>{

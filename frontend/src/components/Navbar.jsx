@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useCart } from "../context/CartContext";
 import { Link } from "react-router-dom";
 import {
   ShoppingCart,
@@ -25,7 +26,7 @@ const navLinks = [
 function Navbar({ user, setUser, setShowAuth }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAccount, setShowAccount] = useState(false);
-
+const { openCart, count } = useCart();
   // When user clicks the user icon
   const handleUserClick = () => {
     if (user) {
@@ -99,13 +100,15 @@ function Navbar({ user, setUser, setShowAuth }) {
             className="md:hidden"
           />
 
-          {/* Cart */}
-          <Link to="/cart">
-            <ShoppingCart
-              size={20}
-              strokeWidth={1.5}
-            />
-          </Link>
+         {/* Cart */}
+<button onClick={openCart} className="relative" aria-label="Open cart">
+  <ShoppingCart size={20} strokeWidth={1.5} />
+  {count > 0 && (
+    <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#e0626a] text-[10px] text-white">
+      {count}
+    </span>
+  )}
+</button>
 
 
           {/* USER ICON + ACCOUNT DROPDOWN */}

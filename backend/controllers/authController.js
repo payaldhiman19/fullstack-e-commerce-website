@@ -1,6 +1,7 @@
 const bcrypt=require("bcryptjs");
 const jwt=require("jsonwebtoken");
 const User=require("../models/User");
+// const { OAuth2Client } = require("google-auth-library");
 const registerUser=async(req,res)=>{
     try{
         const{name,email,password}=req.body;
@@ -84,4 +85,5 @@ const loginUser=async(req,res)=>{
     });
   }
 } ;
+
 module.exports={registerUser,loginUser};

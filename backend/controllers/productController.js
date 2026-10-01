@@ -1,13 +1,25 @@
 const Product=require("../models/Product");
-const getProducts=async (req,res)=>{
-    //anyone can view
-    try{
-        const products=await Product.find();
-        res.status(200).json(products);
-    }catch (error) {
+const getProducts = async (req, res) => {
+  try {
+    const { category, sale, search, sort, page = 1, limit = 12 } = req.query;
+    const filter = {};
+    if (category) filter.category = category;
+    if (sale === "true") filter.isOnSale = true;
+    if (search) filter.name = { $regex: search, $options: "i" };
+
+    const sortMap = { price_asc: { price: 1 }, price_desc: { price: -1 }, newest: { createdAt: -1 } };
+
+    const products = await Product.find(filter)
+      .sort(sortMap[sort] || { createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit));
+
+    const total = await Product.countDocuments(filter);
+    res.status(200).json({ products, total, page: Number(page), pages: Math.ceil(total / limit) });
+  } catch (error) {
     res.status(500).json({ message: "Failed to fetch products", error: error.message });
-    }
-  };
+  }
+};
 
   const getProductBySlug = async (req, res) => {
   try {

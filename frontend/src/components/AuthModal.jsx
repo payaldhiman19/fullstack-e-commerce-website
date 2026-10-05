@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { GoogleLogin } from "@react-oauth/google";
 
 function AuthModal({ onClose, setUser }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,7 +17,6 @@ function AuthModal({ onClose, setUser }) {
     });
   };
 
-
   // Login / Register
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,11 +28,9 @@ function AuthModal({ onClose, setUser }) {
     try {
       const response = await fetch(url, {
         method: "POST",
-
         headers: {
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify(formData),
       });
 
@@ -40,32 +38,23 @@ function AuthModal({ onClose, setUser }) {
 
       console.log("Backend response:", data);
 
-
       // SUCCESS
       if (response.ok) {
-
         alert(data.message);
 
         if (isLogin) {
-
           // Save JWT token
           localStorage.setItem("token", data.token);
 
           // Save user information
-          localStorage.setItem(
-            "user",
-            JSON.stringify(data.user)
-          );
+          localStorage.setItem("user", JSON.stringify(data.user));
 
           // Update React state immediately
           setUser(data.user);
 
           // Close modal
           onClose();
-        }
-
-        else {
-
+        } else {
           // Clear form
           setFormData({
             name: "",
@@ -76,27 +65,45 @@ function AuthModal({ onClose, setUser }) {
           // Switch to login
           setIsLogin(true);
         }
-
       }
-
 
       // ERROR FROM BACKEND
       else {
         alert(data.message);
       }
-
     } catch (error) {
-
       console.error("Auth error:", error);
-
       alert("Unable to connect to server");
     }
   };
 
+  // Google Login / Signup
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/google", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
 
-  // Switch Login ↔ Signup
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setUser(data.user);
+        onClose();
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Google auth error:", error);
+      alert("Unable to connect to server");
+    }
+  };
+
+  // Switch Login <-> Signup
   const switchMode = () => {
-
     setIsLogin(!isLogin);
 
     // Clear old form data
@@ -107,30 +114,21 @@ function AuthModal({ onClose, setUser }) {
     });
   };
 
-
   return (
     <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
-
       <div className="relative w-[400px] rounded-xl bg-white p-8">
-
         {/* CLOSE BUTTON */}
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-3 text-2xl"
-        >
+        <button onClick={onClose} className="absolute right-4 top-3 text-2xl">
           ×
         </button>
-
 
         {/* HEADING */}
         <h2 className="mb-6 text-center text-2xl font-bold">
           {isLogin ? "Login" : "Create Account"}
         </h2>
 
-
         {/* FORM */}
         <form onSubmit={handleSubmit}>
-
           {/* NAME - only for signup */}
           {!isLogin && (
             <input
@@ -143,7 +141,6 @@ function AuthModal({ onClose, setUser }) {
             />
           )}
 
-
           {/* EMAIL */}
           <input
             type="email"
@@ -153,7 +150,6 @@ function AuthModal({ onClose, setUser }) {
             onChange={handleChange}
             className="mb-4 w-full rounded-lg border p-3"
           />
-
 
           {/* PASSWORD */}
           <input
@@ -165,7 +161,6 @@ function AuthModal({ onClose, setUser }) {
             className="mb-4 w-full rounded-lg border p-3"
           />
 
-
           {/* LOGIN / SIGNUP BUTTON */}
           <button
             type="submit"
@@ -173,34 +168,28 @@ function AuthModal({ onClose, setUser }) {
           >
             {isLogin ? "Login" : "Sign Up"}
           </button>
-             
 
-             <div className="my-4 flex items-center gap-3">
-  <div className="h-px flex-1 bg-gray-300"></div>
+          {/* DIVIDER */}
+          <div className="my-4 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gray-300"></div>
+            <span className="text-sm text-gray-500">OR</span>
+            <div className="h-px flex-1 bg-gray-300"></div>
+          </div>
 
-  <span className="text-sm text-gray-500">
-    OR
-  </span>
-
-  <div className="h-px flex-1 bg-gray-300"></div>
-</div>
-
-<button
-  type="button"
-  className="flex w-full items-center justify-center gap-2 rounded-lg border p-3"
->
-  Continue with Google
-</button>
-
+          {/* GOOGLE LOGIN */}
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => alert("Google sign-in failed")}
+              text="continue_with"
+              width="336"
+            />
+          </div>
         </form>
-
 
         {/* SWITCH LOGIN / SIGNUP */}
         <p className="mt-5 text-center text-sm">
-
-          {isLogin
-            ? "Don't have an account?"
-            : "Already have an account?"}
+          {isLogin ? "Don't have an account?" : "Already have an account?"}
 
           <button
             type="button"
@@ -209,11 +198,8 @@ function AuthModal({ onClose, setUser }) {
           >
             {isLogin ? "Sign Up" : "Login"}
           </button>
-
         </p>
-
       </div>
-
     </div>
   );
 }

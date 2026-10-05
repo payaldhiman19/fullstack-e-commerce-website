@@ -16,6 +16,11 @@ import "./App.css";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
 import Policies from "./pages/Policies";
+import ManageProducts from "./components/ManageProducts";
+import ProductForm from "./components/ProductForm";
+import MobileBottomNav from "./components/MobileBottomNav";
+import { WishlistProvider } from "./context/WishlistContext";
+import Wishlist from "./pages/Wishlist";
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -31,9 +36,10 @@ function Layout({ user, setUser, setShowAuth }) {
       <Flashsale />
       <Navbar user={user} setUser={setUser} setShowAuth={setShowAuth} />
       <main>
-        <Outlet />
+      <Outlet />
       </main>
       <Footer />
+      <MobileBottomNav />
     </>
   );
 }
@@ -47,7 +53,8 @@ function App() {
   const [showAuth, setShowAuth] = useState(false);
 
   return (
-    <>
+      <WishlistProvider>
+
       <Routes>
         {/* Customer pages (with navbar + footer) */}
         <Route
@@ -72,7 +79,14 @@ function App() {
           <Route path="/terms" element={<Policies />} />
           <Route path="/account" element={<Placeholder title="My Account" />} />
           <Route path="/products/:slug" element={<ProductPage />} />
+          <Route path="/admin/products" element={<ManageProducts />} />
+          <Route path="/admin/add-product" element={<ProductForm />} />
+          <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
           <Route path="/orders" element={<Placeholder title="My Orders" />} />
+          <Route path="/track-orders" element={<Placeholder title="Track Orders" />} />
+          <Route path="/exchange" element={<Placeholder title="Exchange Request" />} />
+          <Route path="/tickets" element={<Placeholder title="Tickets" />} />
+          <Route path="/wishlist" element={<Wishlist />} />
 
           {/* Every nav link: /new, /womenswear, /tyohar-sale, /ready-to-ship ... */}
           <Route path="/:category" element={<CategoryPage />} />
@@ -90,7 +104,7 @@ function App() {
       {showAuth && (
         <AuthModal onClose={() => setShowAuth(false)} setUser={setUser} />
       )}
-    </>
+    </WishlistProvider>
   );
 }
 

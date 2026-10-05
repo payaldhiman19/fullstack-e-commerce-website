@@ -16,13 +16,10 @@ email:{
 
 password: {
       type: String,
-      required: true,
+     // required: true,
     },
 
-googleId: {
-      type: String,
-      default: null,
-    },
+googleId: { type: String, unique: true, sparse: true },
     
     role: {
       type: String,

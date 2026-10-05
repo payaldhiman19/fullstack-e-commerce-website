@@ -14,13 +14,14 @@
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.11.0",
     "cors": "^2.8.6",
-    "dotenv": "^18.0.4",
+    "dotenv": "^18.0.5",
     "express": "^5.2.1",
     "express-oauth2-jwt-bearer": "^1.10.0",
     "google-auth-library": "^11.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.10.2",
     "multer": "^2.4.0",
+    "razorpay": "^2.9.8",
     "react-router-dom": "^7.18.4",
     "streamifier": "^0.1.1"
   }

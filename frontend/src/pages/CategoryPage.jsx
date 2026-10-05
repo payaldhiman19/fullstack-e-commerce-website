@@ -1,9 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { SlidersHorizontal } from "lucide-react";
 import FilterSidebar, { priceRanges } from "../components/FilterSidebar";
 import ProductCard from "../components/ProductCard";
-import { catalog } from "../data/catalog";
+import api from "../api";
 
 const emptyFilters = {
   inStock: true,
@@ -17,40 +17,64 @@ const emptyFilters = {
   occasions: [],
 };
 
-// Which products belong on which nav page
-const pageProducts = (slug) => {
+// Which API query each nav page uses
+const pageQuery = (slug) => {
   switch (slug) {
     case "new":
-      return catalog.filter((p) => p.isNewArrival);
+      return { isNew: "true" };
     case "bestsellers":
-      return catalog.filter((p) => p.isBestseller);
+      return { bestseller: "true" };
     case "ready-to-ship":
-      return catalog.filter((p) => p.isReadyToShip);
+      return { readyToShip: "true" };
     case "tyohar-sale":
-      return catalog.filter((p) => p.discountPercent >= 50);
+      return { minDiscount: 50 };
     case "luxe":
-      return catalog.filter((p) => p.price >= 5000);
+      return { minPrice: 5000 };
     default:
-      return catalog.filter((p) => p.category === slug);
+      return { category: slug };
   }
 };
 
-const unique = (arr) => [...new Set(arr)];
+const unique = (arr) => [...new Set(arr.filter(Boolean))];
 
 const CategoryView = ({ category }) => {
   const [filters, setFilters] = useState(emptyFilters);
   const [sort, setSort] = useState("featured");
   const [showFilters, setShowFilters] = useState(false);
 
-  const base = useMemo(() => pageProducts(category), [category]);
+  const [base, setBase] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+ //fetch from backend
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError("");
+    //api --paramenter wth category based result
+    api
+      .get("/products", { params: { ...pageQuery(category), limit: 100 } })
+      .then((res) => {
+        if (!cancelled) setBase(res.data.products);
+      })
+      .catch(() => {
+        if (!cancelled) setError("Could not load products");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [category]);
 
   const options = useMemo(
     () => ({
-      sizes: unique(base.flatMap((p) => p.sizes.map((s) => s.size))).filter(
-        (s) => s !== "Free"
-      ),
+      sizes: unique(
+        base.flatMap((p) => (p.sizes || []).map((s) => s.size))
+      ).filter((s) => !/^free/i.test(s)),
       colors: unique(base.map((p) => p.color)),
-      types: unique(base.map((p) => p.type)),
+      types: unique(base.map((p) => p.subCategory)),
       patterns: unique(base.map((p) => p.pattern)),
       occasions: unique(base.map((p) => p.occasion)),
     }),
@@ -61,17 +85,20 @@ const CategoryView = ({ category }) => {
     const range = priceRanges.find((r) => r.label === filters.priceRange);
 
     let list = base.filter((p) => {
-      if (filters.inStock && !p.sizes.some((s) => s.stock > 0)) return false;
+      const sizes = p.sizes || [];
+      const discount = p.discountPercent || 0;
+
+      if (filters.inStock && !sizes.some((s) => s.stock > 0)) return false;
       if (filters.readyToShip && !p.isReadyToShip) return false;
-      if (p.discountPercent < filters.minDiscount) return false;
+      if (discount < filters.minDiscount) return false;
       if (range && (p.price < range.min || p.price >= range.max)) return false;
       if (filters.colors.length && !filters.colors.includes(p.color)) return false;
-      if (filters.types.length && !filters.types.includes(p.type)) return false;
+      if (filters.types.length && !filters.types.includes(p.subCategory)) return false;
       if (filters.patterns.length && !filters.patterns.includes(p.pattern)) return false;
       if (filters.occasions.length && !filters.occasions.includes(p.occasion)) return false;
       if (
         filters.sizes.length &&
-        !p.sizes.some((s) => filters.sizes.includes(s.size) && s.stock > 0)
+        !sizes.some((s) => filters.sizes.includes(s.size) && s.stock > 0)
       )
         return false;
       return true;
@@ -79,7 +106,8 @@ const CategoryView = ({ category }) => {
 
     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
-    if (sort === "discount") list = [...list].sort((a, b) => b.discountPercent - a.discountPercent);
+    if (sort === "discount")
+      list = [...list].sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
     return list;
   }, [base, filters, sort]);
 
@@ -90,7 +118,9 @@ const CategoryView = ({ category }) => {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-xl tracking-[0.2em] text-gray-800">{title}</h1>
-          <p className="text-sm text-gray-500">{products.length} products</p>
+          <p className="text-sm text-gray-500">
+            {loading ? "Loading..." : `${products.length} products`}
+          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -125,7 +155,11 @@ const CategoryView = ({ category }) => {
           />
         </aside>
 
-        {products.length === 0 ? (
+        {loading ? (
+          <p className="py-24 text-center text-gray-500">Loading products...</p>
+        ) : error ? (
+          <p className="py-24 text-center text-gray-500">{error}</p>
+        ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-gray-500">
             <p className="text-lg">No products found</p>
             <button

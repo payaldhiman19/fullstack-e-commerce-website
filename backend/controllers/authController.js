@@ -1,7 +1,8 @@
 const bcrypt=require("bcryptjs");
 const jwt=require("jsonwebtoken");
 const User=require("../models/User");
-// const { OAuth2Client } = require("google-auth-library");
+const { OAuth2Client } = require("google-auth-library");
+const googleClient= new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const registerUser=async(req,res)=>{
     try{
         const{name,email,password}=req.body;
@@ -45,7 +46,7 @@ const loginUser=async(req,res)=>{
      if(!user){
         //unauathorized
         return res.status(401).json({
-          message:"Invalid email or password",
+          message:"This account uses Google sign-in. Please continue with Google.",
         });
      }
      //for login match password with hashed one
@@ -86,4 +87,50 @@ const loginUser=async(req,res)=>{
   }
 } ;
 
-module.exports={registerUser,loginUser};
+const googleLogin=async(req,res)=>{
+  try{
+    const {credential} =req.body;
+   //verify token with google
+   const ticket=await googleClient.verifyIdToken({
+    idToken:credential,
+          audience: process.env.GOOGLE_CLIENT_ID,
+   });
+       const { sub, email, name, email_verified } = ticket.getPayload();
+if (!email_verified) {
+      return res.status(400).json({ message: "Google email not verified" });
+    }
+//find or create user
+let user=await User.findOne({email});
+if(!user){
+  //then create
+  user=await User.create({name,email,googleId:sub});
+}else{
+  //link existng account
+  user.googleId=sub;
+  await user.save();
+}
+
+      // same payload as normal login
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(401).json({ message: "Invalid Google token" });
+  }
+
+};
+module.exports={registerUser,loginUser,googleLogin};

@@ -72,37 +72,44 @@ const CartDrawer = () => {
         ) : (
           <>
             <div className="flex-1 space-y-4 overflow-y-auto p-4">
-              {items.map((item) => (
-                <div key={item._id} className="flex gap-3">
-                  <img
-                    src={item.images?.[0]}
-                    alt={item.name}
-                    className="h-24 w-20 object-cover bg-pink-100"
-                  />
-                  <div className="flex flex-1 flex-col">
-                    <p className="line-clamp-2 text-sm text-gray-800">{item.name}</p>
-                    <div className="mt-1 flex items-center gap-2 text-sm">
-                      <span className="font-semibold text-[#e0626a]">{fmt(item.price)}</span>
-                      {item.comparePrice > item.price && (
-                        <span className="text-gray-400 line-through">{fmt(item.comparePrice)}</span>
-                      )}
-                    </div>
-                    <div className="mt-auto flex items-center justify-between">
-                      <div className="flex items-center border border-gray-300">
-                        <button onClick={() => updateQty(item._id, -1)} className="px-3 py-1">−</button>
-                        <span className="px-3 text-sm">{item.qty}</span>
-                        <button onClick={() => updateQty(item._id, 1)} className="px-3 py-1">+</button>
-                      </div>
-                      <button
-                        onClick={() => removeItem(item._id)}
-                        className="text-xs text-gray-500 underline"
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+             {items.map((item) => (
+  <div key={item.lineId} className="flex gap-3">
+    <img
+      src={item.images?.[0]}
+      alt={item.name}
+      className="h-24 w-20 bg-pink-100 object-cover"
+    />
+    <div className="flex flex-1 flex-col">
+      <p className="line-clamp-2 text-sm text-gray-800">{item.name}</p>
+      <p className="text-xs text-gray-500">Size: {item.size}</p>
+      <div className="mt-1 flex items-center gap-2 text-sm">
+        <span className="font-semibold text-[#e0626a]">{fmt(item.price)}</span>
+        {item.comparePrice > item.price && (
+          <span className="text-gray-400 line-through">{fmt(item.comparePrice)}</span>
+        )}
+      </div>
+      <div className="mt-auto flex items-center justify-between">
+        <div className="flex items-center border border-gray-300">
+          <button onClick={() => updateQty(item.lineId, -1)} className="px-3 py-1">−</button>
+          <span className="px-3 text-sm">{item.qty}</span>
+          <button
+            onClick={() => updateQty(item.lineId, 1)}
+            disabled={item.qty >= item.maxStock}
+            className="px-3 py-1 disabled:text-gray-300"
+          >
+            +
+          </button>
+        </div>
+        <button
+          onClick={() => removeItem(item.lineId)}
+          className="text-xs text-gray-500 underline"
+        >
+          Remove
+        </button>
+      </div>
+    </div>
+  </div>
+))}
             </div>
 
             <div className="border-t border-gray-200 p-4">

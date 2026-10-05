@@ -50,7 +50,9 @@ const FilterSidebar = ({ filters, setFilters, options }) => {
         : [...f[key], value],
     }));
 
-  const listSection = (title, key, values) => (
+  const listSection = (title, key, values) => {
+  if (!values.length) return null;
+  return (
     <Section title={title}>
       {values.map((v) => (
         <Check
@@ -62,6 +64,7 @@ const FilterSidebar = ({ filters, setFilters, options }) => {
       ))}
     </Section>
   );
+};
 
   return (
     <div>

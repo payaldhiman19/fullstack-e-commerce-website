@@ -23,19 +23,3 @@ function ProductList(){
   );
 }
 export default ProductList;
-
-
-// import ProductCard from "./ProductCard";
-// import { products } from "../data/products";
-
-// const ProductList = () => {
-//   return (
-//     <div className="grid grid-cols-2 gap-3 p-3 md:grid-cols-3 md:gap-6 md:p-6 lg:grid-cols-4">
-//       {products.map((p) => (
-//         <ProductCard key={p._id} product={p} />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default ProductList;

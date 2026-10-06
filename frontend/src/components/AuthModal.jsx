@@ -78,6 +78,7 @@ function AuthModal({ onClose, setUser }) {
   };
 
   // Google Login / Signup
+  //send token to backend it never send emailor name coz frontend could fake those
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const response = await fetch("http://localhost:5000/api/auth/google", {

@@ -21,6 +21,7 @@ import ProductForm from "./components/ProductForm";
 import MobileBottomNav from "./components/MobileBottomNav";
 import { WishlistProvider } from "./context/WishlistContext";
 import Wishlist from "./pages/Wishlist";
+import BulkImport from "./components/BulkImport";
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -95,6 +96,7 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin setUser={setUser} />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/add-product" element={<AddProduct />} />
+        <Route path="/admin/bulk-import" element={<BulkImport />} />
       </Routes>
 
       {/* Cart drawer (opens from the navbar cart icon) */}

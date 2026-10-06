@@ -70,6 +70,11 @@ function AdminDashboard() {
             >
               + Add Product
             </button>
+             <button
+             onClick={() => navigate("/admin/bulk-import")}
+             className="rounded-lg border px-5 py-3">
+               Bulk Import
+               </button>
 
             <button disabled className="rounded-lg border px-5 py-3 text-gray-400">
               Manage Orders (soon)

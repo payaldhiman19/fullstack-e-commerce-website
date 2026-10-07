@@ -22,6 +22,8 @@ import MobileBottomNav from "./components/MobileBottomNav";
 import { WishlistProvider } from "./context/WishlistContext";
 import Wishlist from "./pages/Wishlist";
 import BulkImport from "./components/BulkImport";
+import SearchPage from "./pages/SearchPage";
+
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -72,6 +74,7 @@ function App() {
               </>
             }
           />
+          <Route path="/search" element={<SearchPage />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/shipping-policy" element={<Policies />} />

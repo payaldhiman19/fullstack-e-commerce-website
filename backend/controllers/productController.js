@@ -37,7 +37,17 @@ const getProducts = async (req, res) => {
 }
 
     if (category) filter.category = matchAny(category);
-    if (search) filter.name = { $regex: escapeRegex(search), $options: "i" };
+    if (search && search.trim()) {
+      const fields = ["name", "category", "subCategory", "color", "fabric", "pattern", "occasion"];
+
+      filter.$and = search
+        .trim()
+        .split(/\s+/) // "pink saree" becomes ["pink", "saree"]
+        .map((word) => {
+          const rx = new RegExp(escapeRegex(word), "i"); // contains this word, ignoring capitals
+          return { $or: fields.map((f) => ({ [f]: rx })) }; // the word can be in any one field
+        });
+    }    
     if (color) filter.color = matchAny(color);
     if (pattern) filter.pattern = matchAny(pattern);
     if (occasion) filter.occasion = matchAny(occasion);

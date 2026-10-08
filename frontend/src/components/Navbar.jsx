@@ -54,34 +54,19 @@ const dropdownData = {
 
   MENSWEAR: [
     {
-      title: "MEN'S WEAR",
-      items: ["Kurta Sets", "Shirts", "T-Shirts", "Jackets"],
-    },
-    {
-      title: "BOTTOM WEAR",
-      items: ["Trousers", "Pants", "Denims"],
+      items: ["Kurta Sets", "Shirts"],
     },
   ],
 
   KIDSWEAR: [
     {
-      title: "GIRLS",
-      items: ["Dresses", "Lehenga Sets", "Kurta Sets"],
-    },
-    {
-      title: "BOYS",
-      items: ["Kurta Sets", "Shirts", "T-Shirts"],
+      items: ["Ethnic Wear", "Western Wear"],
     },
   ],
 
   FOOTWEAR: [
     {
-      title: "WOMEN",
-      items: ["Juttis", "Heels", "Sandals"],
-    },
-    {
-      title: "MEN",
-      items: ["Loafers", "Mojaris", "Sandals"],
+      items: ["Juttis", "Heels", "Sandals", "Loafers"],
     },
   ],
 
@@ -98,13 +83,6 @@ const dropdownData = {
       items: ["Earrings", "Necklaces", "Bracelets", "Rings"],
     },
   ],
-
-  LUXE: [
-    {
-      title: "LUXE COLLECTION",
-      items: ["Designer Wear", "Premium Suits", "Luxury Sarees"],
-    },
-  ],
 };
 
 function Navbar({ user, setUser, setShowAuth }) {
@@ -115,12 +93,13 @@ function Navbar({ user, setUser, setShowAuth }) {
 
   const { openCart, count } = useCart();
 
-  // ---------- SEARCH (new) ----------
+  // ---------- SEARCH ----------
   const navigate = useNavigate();
-  const [query, setQuery] = useState(""); // what is typed in the search box
+  const [query, setQuery] = useState("");
 
   const handleSearch = (e) => {
-    e.preventDefault(); // stop the page from reloading
+    e.preventDefault();
+
     if (query.trim()) {
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       setMenuOpen(false);
@@ -143,11 +122,14 @@ function Navbar({ user, setUser, setShowAuth }) {
         {/* LEFT SIDE */}
         <div className="flex items-center">
           {/* Mobile menu */}
-          <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            className="md:hidden"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
 
-          {/* Desktop search (now a form, so Enter works) */}
+          {/* Desktop search */}
           <form
             onSubmit={handleSearch}
             className="hidden items-center bg-gray-100 md:flex"
@@ -164,23 +146,36 @@ function Navbar({ user, setUser, setShowAuth }) {
           </form>
         </div>
 
+        {/* LOGO */}
         <Link
           to="/"
           className="justify-self-center text-xl font-medium tracking-wider sm:text-2xl"
         >
-          AACHHO
+          Rivana
         </Link>
 
         {/* ================= RIGHT SIDE ================= */}
+
         <div className="flex items-center justify-end gap-4 sm:gap-5">
-          {/* Mobile search: opens the Search page */}
-          <Link to="/search" className="md:hidden" aria-label="Search">
+          {/* Mobile search */}
+          <Link
+            to="/search"
+            className="md:hidden"
+            aria-label="Search"
+          >
             <Search size={20} />
           </Link>
 
           {/* Cart */}
-          <button onClick={openCart} className="relative" aria-label="Open cart">
-            <ShoppingCart size={20} strokeWidth={1.5} />
+          <button
+            onClick={openCart}
+            className="relative"
+            aria-label="Open cart"
+          >
+            <ShoppingCart
+              size={20}
+              strokeWidth={1.5}
+            />
 
             {count > 0 && (
               <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[#e0626a] text-[10px] text-white">
@@ -190,21 +185,25 @@ function Navbar({ user, setUser, setShowAuth }) {
           </button>
 
           {/* Account */}
-          <AccountMenu user={user} setUser={setUser} setShowAuth={setShowAuth} />
+          <AccountMenu
+            user={user}
+            setUser={setUser}
+            setShowAuth={setShowAuth}
+          />
         </div>
       </div>
 
       {/* ================= DESKTOP NAV ================= */}
 
       <div className="hidden border-t md:block">
-        <div className="flex justify-center gap-5 py-3 text-sm tracking-[0.18em] text-gray-700 lg:gap-6">
+        <div className="relative flex justify-center gap-5 py-3 text-sm tracking-[0.18em] text-gray-700 lg:gap-6">
           {navLinks.map((label) => {
             const hasDropdown = dropdownData[label];
 
             return (
               <div
                 key={label}
-                className="relative"
+                className="relative h-full"
                 onMouseEnter={() => {
                   if (hasDropdown) {
                     setActiveMenu(label);
@@ -213,57 +212,99 @@ function Navbar({ user, setUser, setShowAuth }) {
                   }
                 }}
               >
+                {/* ================= NAV ITEM ================= */}
+
                 <Link
                   to={createPath(label)}
-                  className={`block pb-2 transition-colors hover:text-black ${
-                    activeMenu === label ? "border-b border-black" : ""
-                  }`}
+                  className="relative block pb-2 transition-colors hover:text-black"
                 >
                   {label}
+
+                  {/* BLACK HOVER LINE */}
+                  {activeMenu === label && (
+                    <span className="absolute bottom-0 left-0 right-0 h-px bg-black" />
+                  )}
                 </Link>
+
+                {/* ================= SMALL DROPDOWN ================= */}
+
+                {activeMenu === label &&
+                  hasDropdown &&
+                  label !== "WOMENSWEAR" && (
+                    <div
+                      className="absolute left-0 top-full z-50 w-40 border-t bg-white shadow-sm"
+                      onMouseEnter={() => setActiveMenu(label)}
+                    >
+                      <div className="py-2">
+                        {dropdownData[label].map((column) => (
+                          <div key={column.title || label}>
+                            {column.items.map((item) => (
+                              <Link
+                                key={item}
+                                to={createPath(item)}
+                                className="block px-3 py-2 text-sm tracking-normal text-gray-600 transition hover:bg-gray-50 hover:text-black"
+                              >
+                                {item}
+                              </Link>
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
               </div>
             );
           })}
-        </div>
 
-        {activeMenu && dropdownData[activeMenu] && (
-          <div
-            className="absolute left-0 top-full z-50 w-full border-t bg-white shadow-sm"
-            onMouseEnter={() => setActiveMenu(activeMenu)}
-          >
-            <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-10 py-8 md:grid-cols-3 lg:grid-cols-5">
-              {dropdownData[activeMenu].map((column) => (
-                <div key={column.title}>
-                  {/* Column heading */}
-                  <h3 className="mb-5 text-sm font-semibold tracking-[0.18em] text-gray-700">
-                    {column.title}
-                  </h3>
+          {/* ================= WOMENSWEAR MEGA MENU ================= */}
 
-                  {/* Column links */}
-                  <div className="flex flex-col gap-3">
-                    {column.items.map((item) => (
-                      <Link
-                        key={item}
-                        to={createPath(item)}
-                        className="text-sm tracking-wide text-gray-600 transition hover:text-black"
-                      >
-                        {item}
-                      </Link>
-                    ))}
+          {activeMenu === "WOMENSWEAR" && (
+            <div
+              className="absolute left-0 top-full z-50 w-full border-t bg-white shadow-sm"
+              onMouseEnter={() => setActiveMenu("WOMENSWEAR")}
+            >
+              <div className="mx-auto grid max-w-7xl grid-cols-2 gap-10 px-10 py-8 md:grid-cols-3 lg:grid-cols-5">
+                {dropdownData.WOMENSWEAR.map((column) => (
+                  <div key={column.title}>
+                    {/* Column heading */}
+                    <h3 className="mb-5 text-sm font-semibold tracking-[0.18em] text-gray-700">
+                      {column.title}
+                    </h3>
+
+                    {/* Column links */}
+                    <div className="flex flex-col gap-3">
+                      {column.items.map((item) => (
+                        <Link
+                          key={item}
+                          to={createPath(item)}
+                          className="text-sm tracking-wide text-gray-600 transition hover:text-black"
+                        >
+                          {item}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
+      {/* ================= MOBILE MENU ================= */}
 
       {menuOpen && (
         <div className="border-t bg-white px-4 py-4 md:hidden">
-          {/* Search box inside the mobile menu */}
-          <form onSubmit={handleSearch} className="mb-3 flex items-center bg-gray-100">
-            <Search size={18} className="ml-3 text-gray-500" />
+          {/* Search box inside mobile menu */}
+          <form
+            onSubmit={handleSearch}
+            className="mb-3 flex items-center bg-gray-100"
+          >
+            <Search
+              size={18}
+              className="ml-3 text-gray-500"
+            />
+
             <input
               type="text"
               value={query}
@@ -290,7 +331,9 @@ function Navbar({ user, setUser, setShowAuth }) {
                   {hasDropdown && (
                     <button
                       onClick={() =>
-                        setActiveMenu(activeMenu === label ? null : label)
+                        setActiveMenu(
+                          activeMenu === label ? null : label
+                        )
                       }
                       className="px-2"
                     >
@@ -303,10 +346,15 @@ function Navbar({ user, setUser, setShowAuth }) {
                 {activeMenu === label && hasDropdown && (
                   <div className="mb-2 ml-4 border-l pl-4">
                     {dropdownData[label].map((column) => (
-                      <div key={column.title} className="mb-5">
-                        <h3 className="mb-2 text-xs font-semibold tracking-wider text-gray-700">
-                          {column.title}
-                        </h3>
+                      <div
+                        key={column.title || label}
+                        className="mb-5"
+                      >
+                        {column.title && (
+                          <h3 className="mb-2 text-xs font-semibold tracking-wider text-gray-700">
+                            {column.title}
+                          </h3>
+                        )}
 
                         <div className="flex flex-col gap-2">
                           {column.items.map((item) => (

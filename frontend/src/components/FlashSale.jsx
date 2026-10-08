@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 function FlashSale() {
   const[time,setTime]=useState({
-    hours:2,
-    minutes:50,
-    seconds:13,
+    hours:1,
+    minutes:40,
+    seconds:10,
   });
   useEffect(()=>{
      const timer=setInterval(() => {
@@ -38,8 +38,7 @@ return {
   }, []);
 
   return (
-<div className="w-full min-h-[60px] sm:min-h-[75px] bg-pink-600 text-white flex items-center justify-center gap-3 sm:gap-6 px-2 sm:px-4">
-  <div className="flex items-center gap-1 sm:gap-3 whitespace-nowrap">
+<div className="w-full min-h-[60px] sm:min-h-[75px] bg-[#85866A] text-white flex items-center justify-center gap-3 sm:gap-6 px-2 sm:px-4">  <div className="flex items-center gap-1 sm:gap-3 whitespace-nowrap">
       <strong className="text-sm sm:text-lg md:text-[23px] font-bold">
       Flash Sale: Buy 1 Get 1 Free
       </strong>

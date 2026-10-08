@@ -27,7 +27,7 @@ function Policies() {
       content: (
         <>
           <p>
-            At Aachoo, we respect your privacy and are committed to protecting
+            At Rivana, we respect your privacy and are committed to protecting
             your personal information.
           </p>
 
@@ -73,7 +73,7 @@ function Policies() {
       content: (
         <>
           <p>
-            By using the Aachoo website, you agree to follow these terms and
+            By using the Rivana website, you agree to follow these terms and
             use the website responsibly.
           </p>
 
@@ -93,7 +93,7 @@ function Policies() {
           </p>
 
           <p>
-            Aachoo may update these terms when required. Changes will be
+             Rivana may update these terms when required. Changes will be
             reflected on this page.
           </p>
         </>

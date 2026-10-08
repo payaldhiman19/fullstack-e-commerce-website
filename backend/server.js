@@ -17,7 +17,7 @@ app.use(express.json());
 connectDB();
 
 app.get("/", (req, res) => {
-  res.send("Aachoo api is running");
+  res.send("Rivana api is running");
 });
 
 app.use("/api/upload", uploadRoutes);

@@ -1,76 +1,57 @@
-import {motion} from "framer-motion";
-function Hero(){
-    return(
-<section className="relative w-full h-[550px] overflow-hidden">
-  <img
-  src="https://images.unsplash.com/photo-1610030469983-98e550d6193c"
-  alt="Shopping collection"
-  className="absolute inset-0 w-full h-full object-cover"
-/>
-         {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/40"></div>
-<div className="relative z-10 flex items-center justify-center h-full text-center px-6">
-            <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+function Hero() {
+  const images = [
+    "/images/banner1.jpg",
+    "/images/banner2.jpg",
+  ];
+
+  const [currentImage, setCurrentImage] = useState(0);
+
+  // Automatically change image every 4 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="relative w-full h-[550px] overflow-hidden">
+
+      {/* Slideshow */}
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={currentImage}
+          src={images[currentImage]}
+          alt="Fashion Collection"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-white max-w-3xl"
-        >
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+      </AnimatePresence>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-sm md:text-base uppercase tracking-[4px] mb-4"
-          >
-            New Collection
-          </motion.p>
+      {/* Dots */}
+      <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+        {images.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => setCurrentImage(index)}
+            className={`h-2.5 w-2.5 rounded-full transition-all ${
+              currentImage === index
+                ? "w-6 bg-black"
+                : "bg-white"
+            }`}
+          />
+        ))}
+      </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.7 }}
-            className="text-4xl md:text-6xl font-bold leading-tight"
-          >
-            Discover Amazing Products
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.7 }}
-            className="mt-5 text-base md:text-xl"
-          >
-            Shop the latest collection
-          </motion.p>
-
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.7 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="
-              mt-8
-              px-8
-              py-3
-              bg-white
-              text-black
-              rounded-full
-              font-semibold
-              transition-shadow
-              duration-300
-              hover:shadow-2xl
-            "
-          >
-            SHOP NOW
-          </motion.button>
-
-        </motion.div>
-
-
-</div>
-</section>
-    );
+    </section>
+  );
 }
+
 export default Hero;

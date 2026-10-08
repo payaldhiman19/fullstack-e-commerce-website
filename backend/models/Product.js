@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema(
 
     brand: {
       type: String,
-      default: "Aachho",
+      default: "Rivana",
     },
 
     description: {

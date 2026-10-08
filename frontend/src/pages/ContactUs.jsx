@@ -7,13 +7,13 @@ function ContactUs() {
         </h1>
 
         <p className="mb-8 leading-7 text-gray-600">
-          Have a question or need help? Get in touch with the Aachoo team.
+          Have a question or need help? Get in touch with the Rivana team.
         </p>
 
         <div className="space-y-5 text-gray-700">
           <div>
             <h2 className="font-semibold">Email</h2>
-            <p className="mt-1">support@aachoo.com</p>
+            <p className="mt-1">support@rivana.com</p>
           </div>
 
           <div>
@@ -24,7 +24,7 @@ function ContactUs() {
           <div>
             <h2 className="font-semibold">Address</h2>
             <p className="mt-1">
-              Aachoo Fashion Store, India
+              Rivana Fashion Store, India
             </p>
           </div>
         </div>

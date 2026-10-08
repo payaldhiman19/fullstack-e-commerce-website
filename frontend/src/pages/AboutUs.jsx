@@ -7,7 +7,7 @@ function AboutUs() {
         </h1>
 
         <p className="mb-5 leading-7 text-gray-600">
-          Welcome to Aachoo, a fashion destination created to make shopping
+          Welcome to Rivana, a fashion destination created to make shopping
           stylish, simple, and convenient.
         </p>
 
@@ -18,7 +18,7 @@ function AboutUs() {
         </p>
 
         <p className="leading-7 text-gray-600">
-          At Aachoo, we believe fashion should be comfortable, accessible,
+          At Rivana, we believe fashion should be comfortable, accessible,
           and easy to explore.
         </p>
       </div>

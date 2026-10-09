@@ -113,7 +113,7 @@ function Navbar({ user, setUser, setShowAuth }) {
 
   return (
     <nav
-      className="relative w-full bg-white"
+      className="sticky top-0 z-[100] w-full bg-white"
       onMouseLeave={() => setActiveMenu(null)}
     >
       {/* ================= TOP NAVBAR ================= */}

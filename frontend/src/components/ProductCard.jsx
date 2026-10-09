@@ -161,7 +161,7 @@ const ProductCard = ({ product }) => {
       <h3 className="mt-3 truncate text-base text-gray-800" title={name}>
         {name}
       </h3>
-      <p className="mt-1 text-sm uppercase tracking-[0.25em] text-gray-400">{brand}</p>
+      <p className="mt-1 text-sm uppercase tracking-[0.25em] text-gray-400">RIVANA</p>
 
       <div className="mt-2 flex items-center gap-2">
         <span className="font-semibold text-[#e0626a]">{fmt(price)}</span>

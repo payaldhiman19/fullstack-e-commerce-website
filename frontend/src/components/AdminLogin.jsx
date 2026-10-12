@@ -1,72 +1,37 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../api";
+import { getAdmin, saveAdmin } from "../adminAuth";
 
-function AdminLogin({ setUser }) {
+function AdminLogin() {
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  // already logged in as admin: go straight to the dashboard
+  useEffect(() => {
+    if (getAdmin()) navigate("/admin/dashboard", { replace: true });
+  }, [navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async (e) => {
+    e.preventDefault(); // stop the page from reloading
+    setError("");
     setLoading(true);
-
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/auth/login",
-        {
-          method: "POST",
+      const { data } = await api.post("/auth/login", { email, password });
 
-          headers: {
-            "Content-Type": "application/json",
-          },
-
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        alert(data.message);
+      // a customer account must not get into the admin panel
+      if (data.user?.role !== "admin") {
+        setError("This account is not an admin account");
         return;
       }
 
-      // Check whether logged-in user is admin
-      if (data.user.role !== "admin") {
-        alert("Access denied. Admin only.");
-        return;
-      }
-
-      // Save admin login
-      localStorage.setItem("token", data.token);
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
-
-      // Update React user state
-      setUser(data.user);
-
-      // Go to admin dashboard
-      navigate("/admin/dashboard");
-
-    } catch (error) {
-      console.error("Admin login error:", error);
-
-      alert("Unable to connect to server");
+      saveAdmin(data.token, data.user); // saved under the admin keys only
+      navigate("/admin/dashboard", { replace: true });
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
@@ -74,64 +39,44 @@ function AdminLogin({ setUser }) {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
+      <form onSubmit={handleLogin} className="w-full max-w-md rounded-2xl bg-white p-10 shadow-sm">
+        <h1 className="text-center text-3xl font-bold">Admin Login</h1>
+        <p className="mb-8 mt-2 text-center text-gray-500">Login to access the admin panel</p>
 
-      <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
+        <label className="mb-2 block text-sm font-semibold">Email</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Admin email"
+          required
+          className="mb-5 w-full rounded-lg border border-black px-4 py-3 outline-none"
+        />
 
-        <h1 className="mb-2 text-center text-2xl font-bold">
-          Admin Login
-        </h1>
+        <label className="mb-2 block text-sm font-semibold">Password</label>
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Admin password"
+          required
+          className="mb-6 w-full rounded-lg border border-black px-4 py-3 outline-none"
+        />
 
-        <p className="mb-6 text-center text-sm text-gray-500">
-          Login to access the admin panel
-        </p>
+        {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
-        <form onSubmit={handleSubmit}>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-lg bg-black py-3 text-white disabled:opacity-60"
+        >
+          {loading ? "Logging in..." : "Login as Admin"}
+        </button>
 
-
-          <div className="mb-4">
-            <label className="mb-1 block text-sm font-medium">
-              Email
-            </label>
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Admin email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full rounded-lg border px-4 py-3 outline-none focus:border-black"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label className="mb-1 block text-sm font-medium">
-              Password
-            </label>
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Admin password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full rounded-lg border px-4 py-3 outline-none focus:border-black"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-lg bg-black py-3 text-white hover:bg-gray-800 disabled:opacity-50"
-          >
-            {loading ? "Logging in..." : "Login as Admin"}
-          </button>
-
-        </form>
-
-      </div>
-
+        <Link to="/" className="mt-5 block text-center text-sm text-gray-500 underline">
+          Back to website
+        </Link>
+      </form>
     </div>
   );
 }

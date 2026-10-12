@@ -47,11 +47,19 @@ const productSchema = new mongoose.Schema(
     },
 
     // Category
-    category: {
-      type: String,
-      required: true,
-    },
+   category: {
+  type: String,
+  required: true,
+  lowercase: true,
+  trim: true,
+},
 
+subcategory: {
+  type: String,
+  lowercase: true,
+  trim: true,
+  default: "",
+},
     // Specifications
     color: {
       type: String,

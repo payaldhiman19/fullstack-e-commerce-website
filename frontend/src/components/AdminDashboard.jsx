@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api";
+import { adminLogout } from "../adminAuth";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -12,12 +13,10 @@ function AdminDashboard() {
       .catch(() => setTotalProducts(0));
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/admin/login");
-  };
-
+const handleLogout = () => {
+  adminLogout();
+  navigate("/admin/login", { replace: true });
+};
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}

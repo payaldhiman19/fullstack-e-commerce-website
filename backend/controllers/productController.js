@@ -24,11 +24,26 @@ const handleError = (res, error, fallbackMessage) => {
 const getProducts = async (req, res) => {
   try {
     const {
-      category, search, sort, page = 1, limit = 12,
-      size, color, pattern, occasion, fabric,
-      minPrice, maxPrice, minDiscount,
-      inStock, readyToShip, isNew, bestseller, sale,
-    } = req.query;
+  category,
+  subcategory,
+  search,
+  sort,
+  page = 1,
+  limit = 12,
+  size,
+  color,
+  pattern,
+  occasion,
+  fabric,
+  minPrice,
+  maxPrice,
+  minDiscount,
+  inStock,
+  readyToShip,
+  isNew,
+  bestseller,
+  sale,
+} = req.query;
 
     const filter = {};
     if (req.query.ids) {
@@ -37,17 +52,32 @@ const getProducts = async (req, res) => {
 }
 
     if (category) filter.category = matchAny(category);
-    if (search && search.trim()) {
-      const fields = ["name", "category", "subCategory", "color", "fabric", "pattern", "occasion"];
+   if (subcategory) filter.subcategory = matchAny(subcategory);
+if (search && search.trim()) {
+  const fields = [
+    "name",
+    "category",
+    "subcategory",
+    "color",
+    "fabric",
+    "pattern",
+    "occasion",
+    "description",
+  ];
 
-      filter.$and = search
-        .trim()
-        .split(/\s+/) // "pink saree" becomes ["pink", "saree"]
-        .map((word) => {
-          const rx = new RegExp(escapeRegex(word), "i"); // contains this word, ignoring capitals
-          return { $or: fields.map((f) => ({ [f]: rx })) }; // the word can be in any one field
-        });
-    }    
+  filter.$and = search
+    .trim()
+    .split(/\s+/)
+    .map((word) => {
+      const rx = new RegExp(escapeRegex(word), "i");
+
+      return {
+        $or: fields.map((field) => ({
+          [field]: rx,
+        })),
+      };
+    });
+}
     if (color) filter.color = matchAny(color);
     if (pattern) filter.pattern = matchAny(pattern);
     if (occasion) filter.occasion = matchAny(occasion);

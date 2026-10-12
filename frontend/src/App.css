@@ -6,3 +6,19 @@
 @media (prefers-reduced-motion: reduce) {
   .card-in { animation: none; }
 }
+
+/* Show hand cursor on clickable elements */
+button:not(:disabled),
+a,
+[role="button"],
+input[type="checkbox"],
+input[type="radio"],
+select,
+label[for] {
+  cursor: pointer;
+}
+
+/* Disabled buttons should not show the hand cursor */
+button:disabled {
+  cursor: not-allowed;
+}

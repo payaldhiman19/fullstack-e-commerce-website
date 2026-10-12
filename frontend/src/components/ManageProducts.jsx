@@ -82,7 +82,7 @@ function ManageProducts() {
                     </td>
                     <td className="p-4">{p.name}</td>
                     <td className="p-4 capitalize">
-                      {p.category}{p.subCategory ? ` / ${p.subCategory}` : ""}
+                      {p.category}{p.subcategory ? ` / ${p.subcategory}` : ""}
                     </td>
                     <td className="p-4">
                       ₹{p.price}

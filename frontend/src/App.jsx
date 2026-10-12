@@ -83,9 +83,6 @@ function App() {
           <Route path="/terms" element={<Policies />} />
           <Route path="/account" element={<Placeholder title="My Account" />} />
           <Route path="/products/:slug" element={<ProductPage />} />
-          <Route path="/admin/products" element={<ManageProducts />} />
-          <Route path="/admin/add-product" element={<ProductForm />} />
-          <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
           <Route path="/orders" element={<Placeholder title="My Orders" />} />
           <Route path="/track-orders" element={<Placeholder title="Track Orders" />} />
           <Route path="/exchange" element={<Placeholder title="Exchange Request" />} />
@@ -95,7 +92,9 @@ function App() {
           {/* Every nav link: /new, /womenswear, /tyohar-sale, /ready-to-ship ... */}
           <Route path="/:category" element={<CategoryPage />} />
         </Route>
-
+        <Route path="/admin/products" element={<ManageProducts />} />
+        <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
+        <Route path="/admin/add-product" element={<ProductForm />} />
         <Route path="/admin/login" element={<AdminLogin setUser={setUser} />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/add-product" element={<AddProduct />} />

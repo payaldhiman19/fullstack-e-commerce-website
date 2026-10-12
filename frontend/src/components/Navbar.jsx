@@ -93,18 +93,21 @@ function Navbar({ user, setUser, setShowAuth }) {
 
   const { openCart, count } = useCart();
 
-  // ---------- SEARCH ----------
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
 
   const handleSearch = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
-      setMenuOpen(false);
-    }
-  };
+  const keyword = query.trim();
+
+  if (keyword) {
+    navigate(`/search?q=${encodeURIComponent(keyword)}`);
+    setMenuOpen(false);
+  } else {
+    navigate("/");
+  }
+};
 
   // Convert text into URL
   const createPath = (text) => {
@@ -139,7 +142,14 @@ function Navbar({ user, setUser, setShowAuth }) {
             <input
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+             const value = e.target.value;
+             setQuery(value);
+           
+             if (!value.trim()) {
+               navigate("/");
+                }
+              }}
               placeholder="Search..."
               className="w-56 bg-transparent px-3 py-2 text-sm outline-none"
             />
@@ -291,8 +301,6 @@ function Navbar({ user, setUser, setShowAuth }) {
         </div>
       </div>
 
-      {/* ================= MOBILE MENU ================= */}
-
       {menuOpen && (
         <div className="border-t bg-white px-4 py-4 md:hidden">
           {/* Search box inside mobile menu */}
@@ -308,7 +316,14 @@ function Navbar({ user, setUser, setShowAuth }) {
             <input
               type="text"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+              const value = e.target.value;
+              setQuery(value);
+            
+              if (!value.trim()) {
+                navigate("/");
+              }
+             }}
               placeholder="Search..."
               className="w-full bg-transparent px-3 py-2 text-sm outline-none"
             />

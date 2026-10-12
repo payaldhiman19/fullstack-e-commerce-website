@@ -1,198 +1,3 @@
-// import { useEffect, useMemo, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { SlidersHorizontal } from "lucide-react";
-// import FilterSidebar, { priceRanges } from "../components/FilterSidebar";
-// import ProductCard from "../components/ProductCard";
-// import api from "../api";
-
-// const emptyFilters = {
-//   inStock: true,
-//   sizes: [],
-//   readyToShip: false,
-//   minDiscount: 0,
-//   priceRange: "",
-//   colors: [],
-//   types: [],
-//   patterns: [],
-//   occasions: [],
-// };
-
-// // Which API query each nav page uses
-// const pageQuery = (slug) => {
-//   switch (slug) {
-//     case "new":
-//       return { isNew: "true" };
-//     case "bestsellers":
-//       return { bestseller: "true" };
-//     case "ready-to-ship":
-//       return { readyToShip: "true" };
-//     case "tyohar-sale":
-//       return { minDiscount: 50 };
-//     case "luxe":
-//       return { minPrice: 5000 };
-//     default:
-//       return { category: slug };
-//   }
-// };
-
-// const unique = (arr) => [...new Set(arr.filter(Boolean))];
-
-// const CategoryView = ({ category }) => {
-//   const [filters, setFilters] = useState(emptyFilters);
-//   const [sort, setSort] = useState("featured");
-//   const [showFilters, setShowFilters] = useState(false);
-
-//   const [base, setBase] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-//  //fetch from backend
-
-//   useEffect(() => {
-//     let cancelled = false;
-//     setLoading(true);
-//     setError("");
-//     //api --paramenter wth category based result
-//     api
-//       .get("/products", { params: { ...pageQuery(category), limit: 100 } })
-//       .then((res) => {
-//         if (!cancelled) setBase(res.data.products);
-//       })
-//       .catch(() => {
-//         if (!cancelled) setError("Could not load products");
-//       })
-//       .finally(() => {
-//         if (!cancelled) setLoading(false);
-//       });
-//     return () => {
-//       cancelled = true;
-//     };
-//   }, [category]);
-
-//   const options = useMemo(
-//     () => ({
-//       sizes: unique(
-//         base.flatMap((p) => (p.sizes || []).map((s) => s.size))
-//       ).filter((s) => !/^free/i.test(s)),
-//       colors: unique(base.map((p) => p.color)),
-//       types: unique(base.map((p) => p.subCategory)),
-//       patterns: unique(base.map((p) => p.pattern)),
-//       occasions: unique(base.map((p) => p.occasion)),
-//     }),
-//     [base]
-//   );
-
-//   const products = useMemo(() => {
-//     const range = priceRanges.find((r) => r.label === filters.priceRange);
-
-//     let list = base.filter((p) => {
-//       const sizes = p.sizes || [];
-//       const discount = p.discountPercent || 0;
-
-//       if (filters.inStock && !sizes.some((s) => s.stock > 0)) return false;
-//       if (filters.readyToShip && !p.isReadyToShip) return false;
-//       if (discount < filters.minDiscount) return false;
-//       if (range && (p.price < range.min || p.price >= range.max)) return false;
-//       if (filters.colors.length && !filters.colors.includes(p.color)) return false;
-//       if (filters.types.length && !filters.types.includes(p.subCategory)) return false;
-//       if (filters.patterns.length && !filters.patterns.includes(p.pattern)) return false;
-//       if (filters.occasions.length && !filters.occasions.includes(p.occasion)) return false;
-//       if (
-//         filters.sizes.length &&
-//         !sizes.some((s) => filters.sizes.includes(s.size) && s.stock > 0)
-//       )
-//         return false;
-//       return true;
-//     });
-
-//     if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
-//     if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
-//     if (sort === "discount")
-//       list = [...list].sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
-//     return list;
-//   }, [base, filters, sort]);
-
-//   const title = category.replace(/-/g, " ").toUpperCase();
-
-//   return (
-//     <section className="mx-auto max-w-[1600px] px-4 py-6 sm:px-8">
-//       <div className="mb-6 flex items-center justify-between">
-//         <div>
-//           <h1 className="text-xl tracking-[0.2em] text-gray-800">{title}</h1>
-//           <p className="text-sm text-gray-500">
-//             {loading ? "Loading..." : `${products.length} products`}
-//           </p>
-//         </div>
-
-//         <div className="flex items-center gap-3">
-//           <button
-//             onClick={() => setShowFilters(!showFilters)}
-//             className="flex items-center gap-2 border border-gray-300 px-3 py-2 text-sm lg:hidden"
-//           >
-//             <SlidersHorizontal size={16} /> Filters
-//           </button>
-
-//           <select
-//             value={sort}
-//             onChange={(e) => setSort(e.target.value)}
-//             className="border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 outline-none"
-//           >
-//             <option value="featured">Featured</option>
-//             <option value="price-asc">Price: Low to High</option>
-//             <option value="price-desc">Price: High to Low</option>
-//             <option value="discount">Discount</option>
-//           </select>
-//         </div>
-//       </div>
-
-//       <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
-//         <aside
-//           className={`${showFilters ? "block" : "hidden"} lg:sticky lg:top-4 lg:block lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-4`}
-//         >
-//           <FilterSidebar
-//             filters={filters}
-//             setFilters={setFilters}
-//             options={options}
-//           />
-//         </aside>
-
-//         {loading ? (
-//           <p className="py-24 text-center text-gray-500">Loading products...</p>
-//         ) : error ? (
-//           <p className="py-24 text-center text-gray-500">{error}</p>
-//         ) : products.length === 0 ? (
-//           <div className="flex flex-col items-center justify-center py-24 text-gray-500">
-//             <p className="text-lg">No products found</p>
-//             <button
-//               onClick={() => setFilters(emptyFilters)}
-//               className="mt-3 border border-black px-4 py-2 text-sm uppercase tracking-widest text-black"
-//             >
-//               Clear filters
-//             </button>
-//           </div>
-//         ) : (
-//           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 xl:grid-cols-4">
-//             {products.map((p) => (
-//               <ProductCard key={p._id} product={p} />
-//             ))}
-//           </div>
-//         )}
-//       </div>
-//     </section>
-//   );
-// };
-
-// // key={category} resets the filters whenever you switch nav pages
-// const CategoryPage = () => {
-//   const { category } = useParams();
-//   return <CategoryView key={category} category={category} />;
-// };
-
-// export default CategoryPage;
-
-
-
-
-
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
@@ -213,25 +18,49 @@ const emptyFilters = {
   occasions: [],
 };
 
-// Which API query each nav page uses
+// Map navbar subcategory URLs to their main category and subcategory.
+const subcategoryMap = {
+  // Jewellery
+  earrings: { category: "jewellery", subcategory: "earrings" },
+  necklaces: { category: "jewellery", subcategory: "necklaces" },
+  bracelets: { category: "jewellery", subcategory: "bracelets" },
+  rings: { category: "jewellery", subcategory: "rings" },
+
+  // Footwear
+  juttis: { category: "footwear", subcategory: "juttis" },
+  heels: { category: "footwear", subcategory: "heels" },
+  sandals: { category: "footwear", subcategory: "sandals" },
+  loafers: { category: "footwear", subcategory: "loafers" },
+
+  // Bags
+  handbags: { category: "bags", subcategory: "handbags" },
+  clutches: { category: "bags", subcategory: "clutches" },
+  "tote-bags": { category: "bags", subcategory: "tote bags" },
+  potlis: { category: "bags", subcategory: "potlis" },
+};
+
 const pageQuery = (slug) => {
   switch (slug) {
     case "new":
       return { isNew: "true" };
+
     case "bestsellers":
       return { bestseller: "true" };
+
     case "ready-to-ship":
       return { readyToShip: "true" };
+
     case "tyohar-sale":
       return { minDiscount: 50 };
+
     case "luxe":
       return { minPrice: 5000 };
+
     default:
-      return { category: slug };
+      return subcategoryMap[slug] || { category: slug };
   }
 };
 
-// Heading and short description for each page (edit the wording freely)
 const pageInfo = {
   new: {
     title: "NEW ARRIVALS",
@@ -268,16 +97,20 @@ const pageInfo = {
 };
 
 const unique = (arr) => [...new Set(arr.filter(Boolean))];
-const titleCase = (s) => s.replace(/\b\w/g, (c) => c.toUpperCase());
 
-// The round images row (one circle per sub category)
+const titleCase = (s) =>
+  String(s || "").replace(/\b\w/g, (c) => c.toUpperCase());
+
+// Circular images for product subcategories.
 const TypeCircles = ({ tiles, active, onPick, loading }) => {
-  // grey placeholders while products load, so the page doesn't jump
   if (loading) {
     return (
       <div className="mb-8 flex justify-center gap-6 overflow-hidden">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="flex animate-pulse flex-col items-center">
+          <div
+            key={i}
+            className="flex animate-pulse flex-col items-center"
+          >
             <div className="h-24 w-24 rounded-full bg-gray-200 sm:h-28 sm:w-28 lg:h-32 lg:w-32" />
             <div className="mt-3 h-3 w-16 bg-gray-200" />
           </div>
@@ -286,7 +119,6 @@ const TypeCircles = ({ tiles, active, onPick, loading }) => {
     );
   }
 
-  // Show the row even when there is only one available subcategory.
   if (tiles.length === 0) return null;
 
   return (
@@ -294,6 +126,7 @@ const TypeCircles = ({ tiles, active, onPick, loading }) => {
       <div className="mx-auto flex w-max min-w-full justify-center gap-5 px-2 sm:gap-7">
         {tiles.map(({ type, image }) => {
           const on = active.includes(type);
+
           return (
             <button
               key={type}
@@ -314,7 +147,9 @@ const TypeCircles = ({ tiles, active, onPick, loading }) => {
                     src={image}
                     alt={titleCase(type)}
                     loading="lazy"
-                    onError={(e) => { e.currentTarget.style.display = "none"; }}
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
                     className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
                   />
                 ) : (
@@ -323,9 +158,12 @@ const TypeCircles = ({ tiles, active, onPick, loading }) => {
                   </span>
                 )}
               </span>
+
               <span
                 className={`mt-3 text-center text-xs uppercase tracking-wider sm:text-sm ${
-                  on ? "font-semibold text-[#e0626a]" : "text-gray-700 group-hover:text-black"
+                  on
+                    ? "font-semibold text-[#e0626a]"
+                    : "text-gray-700 group-hover:text-black"
                 }`}
               >
                 {titleCase(type)}
@@ -339,11 +177,11 @@ const TypeCircles = ({ tiles, active, onPick, loading }) => {
 };
 
 const CategoryView = ({ category, type }) => {
-  // ?type=saree in the address pre-selects that circle
   const [filters, setFilters] = useState({
     ...emptyFilters,
     types: type ? [type] : [],
   });
+
   const [sort, setSort] = useState("featured");
   const [showFilters, setShowFilters] = useState(false);
   const [readMore, setReadMore] = useState(false);
@@ -352,107 +190,227 @@ const CategoryView = ({ category, type }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // fetch from backend, with the right query for this page
+  // Fetch products for the selected category or subcategory.
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setError("");
-    api
-      .get("/products", { params: { ...pageQuery(category), limit: 100 } })
-      .then((res) => {
-        if (!cancelled) setBase(res.data.products);
-      })
-      .catch(() => {
-        if (!cancelled) setError("Could not load products");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError("");
+
+      try {
+        const response = await api.get("/products", {
+          params: {
+            ...pageQuery(category),
+            limit: 100,
+          },
+        });
+
+        if (!cancelled) {
+          setBase(
+            Array.isArray(response.data.products)
+              ? response.data.products
+              : []
+          );
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError("Could not load products. Please try again.");
+          setBase([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProducts();
+
     return () => {
       cancelled = true;
     };
   }, [category]);
 
+  // Values available in the filter sidebar.
   const options = useMemo(
     () => ({
       sizes: unique(
-        base.flatMap((p) => (p.sizes || []).map((s) => s.size))
-      ).filter((s) => !/^free/i.test(s)),
+        base.flatMap((p) =>
+          (Array.isArray(p.sizes) ? p.sizes : []).map((s) => s.size)
+        )
+      ).filter((s) => !/^free/i.test(String(s))),
+
       colors: unique(base.map((p) => p.color)),
-      types: unique(base.map((p) => p.subCategory)),
+      types: unique(base.map((p) => p.subcategory)),
       patterns: unique(base.map((p) => p.pattern)),
       occasions: unique(base.map((p) => p.occasion)),
     }),
     [base]
   );
 
-  // one circle per sub category, using the first product's photo
+  // Build one circle for each subcategory.
   const typeTiles = useMemo(() => {
     const map = new Map();
+
     base.forEach((p) => {
-      const t = p.subCategory?.trim();
+      const t = p.subcategory?.trim();
+
       if (!t) return;
 
-      // Support common image formats returned by the API.
-      const firstImage = Array.isArray(p.images) ? p.images[0] : p.images;
+      const firstImage = Array.isArray(p.images)
+        ? p.images[0]
+        : p.images;
+
       const image =
-        (typeof firstImage === "string" ? firstImage : firstImage?.url) ||
+        (typeof firstImage === "string"
+          ? firstImage
+          : firstImage?.url) ||
         p.image ||
         p.thumbnail ||
         "";
 
-      if (!map.has(t)) map.set(t, { type: t, image, count: 0 });
-      else if (!map.get(t).image && image) map.get(t).image = image;
-      map.get(t).count += 1;
+      const key = t.toLowerCase();
+
+      if (!map.has(key)) {
+        map.set(key, {
+          type: t,
+          image,
+          count: 0,
+        });
+      } else if (!map.get(key).image && image) {
+        map.get(key).image = image;
+      }
+
+      map.get(key).count += 1;
     });
+
     return [...map.values()].sort((a, b) => b.count - a.count);
   }, [base]);
 
-  // click a circle to select it, click it again to clear
-  const pickType = (t) =>
-    setFilters((f) => ({
-      ...f,
-      types: f.types.length === 1 && f.types[0] === t ? [] : [t],
+  // Select a circle, or deselect it when clicked again.
+  const pickType = (t) => {
+    setFilters((previous) => ({
+      ...previous,
+      types:
+        previous.types.length === 1 &&
+        previous.types[0].toLowerCase() === t.toLowerCase()
+          ? []
+          : [t],
     }));
+  };
 
+  // Apply filters and sorting.
   const products = useMemo(() => {
-    const range = priceRanges.find((r) => r.label === filters.priceRange);
+    const range = priceRanges.find(
+      (r) => r.label === filters.priceRange
+    );
 
     let list = base.filter((p) => {
-      const sizes = p.sizes || [];
+      const sizes = Array.isArray(p.sizes) ? p.sizes : [];
       const discount = p.discountPercent || 0;
 
-      if (filters.inStock && !sizes.some((s) => s.stock > 0)) return false;
+      // Products without size variants are not automatically treated
+      // as out of stock.
+      if (
+        filters.inStock &&
+        sizes.length > 0 &&
+        !sizes.some((s) => Number(s.stock) > 0)
+      ) {
+        return false;
+      }
+
       if (filters.readyToShip && !p.isReadyToShip) return false;
       if (discount < filters.minDiscount) return false;
-      if (range && (p.price < range.min || p.price >= range.max)) return false;
-      if (filters.colors.length && !filters.colors.includes(p.color)) return false;
-      if (filters.types.length && !filters.types.includes(p.subCategory)) return false;
-      if (filters.patterns.length && !filters.patterns.includes(p.pattern)) return false;
-      if (filters.occasions.length && !filters.occasions.includes(p.occasion)) return false;
+
+      if (
+        range &&
+        (p.price < range.min || p.price >= range.max)
+      ) {
+        return false;
+      }
+
+      if (
+        filters.colors.length &&
+        !filters.colors.some(
+          (color) =>
+            String(color).toLowerCase() ===
+            String(p.color || "").toLowerCase()
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        filters.types.length &&
+        !filters.types.some(
+          (t) =>
+            String(t).toLowerCase() ===
+            String(p.subcategory || "").toLowerCase()
+        )
+      ) {
+        return false;
+      }
+
+      if (
+        filters.patterns.length &&
+        !filters.patterns.includes(p.pattern)
+      ) {
+        return false;
+      }
+
+      if (
+        filters.occasions.length &&
+        !filters.occasions.includes(p.occasion)
+      ) {
+        return false;
+      }
+
       if (
         filters.sizes.length &&
-        !sizes.some((s) => filters.sizes.includes(s.size) && s.stock > 0)
-      )
+        !sizes.some(
+          (s) =>
+            filters.sizes.includes(s.size) &&
+            Number(s.stock) > 0
+        )
+      ) {
         return false;
+      }
+
       return true;
     });
 
-    if (sort === "price-asc") list = [...list].sort((a, b) => a.price - b.price);
-    if (sort === "price-desc") list = [...list].sort((a, b) => b.price - a.price);
-    if (sort === "discount")
-      list = [...list].sort((a, b) => (b.discountPercent || 0) - (a.discountPercent || 0));
+    if (sort === "price-asc") {
+      list = [...list].sort((a, b) => a.price - b.price);
+    }
+
+    if (sort === "price-desc") {
+      list = [...list].sort((a, b) => b.price - a.price);
+    }
+
+    if (sort === "discount") {
+      list = [...list].sort(
+        (a, b) =>
+          (b.discountPercent || 0) -
+          (a.discountPercent || 0)
+      );
+    }
+
     return list;
   }, [base, filters, sort]);
 
   const info = pageInfo[category];
-  const title = info?.title || category.replace(/-/g, " ").toUpperCase();
+  const title =
+    info?.title || category.replace(/-/g, " ").toUpperCase();
 
   return (
     <section className="mx-auto max-w-[1600px] px-4 py-6 sm:px-8">
-      {/* heading + description */}
+      {/* Page heading and description */}
       <div className="mb-6 text-center">
-        <h1 className="text-2xl tracking-[0.2em] text-[#e0626a] sm:text-3xl">{title}</h1>
+        <h1 className="text-2xl tracking-[0.2em] text-[#e0626a] sm:text-3xl">
+          {title}
+        </h1>
+
         {info?.text && (
           <>
             <p
@@ -462,7 +420,9 @@ const CategoryView = ({ category, type }) => {
             >
               {info.text}
             </p>
+
             <button
+              type="button"
               onClick={() => setReadMore(!readMore)}
               className="mt-1 text-sm font-semibold text-[#e0626a]"
             >
@@ -472,7 +432,7 @@ const CategoryView = ({ category, type }) => {
         )}
       </div>
 
-      {/* circles */}
+      {/* Subcategory circles */}
       <TypeCircles
         tiles={typeTiles}
         active={filters.types}
@@ -480,15 +440,17 @@ const CategoryView = ({ category, type }) => {
         loading={loading}
       />
 
-      {/* toolbar: count, selected-type chip, filters button, sort */}
+      {/* Product count, selected filters and sorting */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <p className="text-sm text-gray-500">
             {loading ? "Loading..." : `${products.length} products`}
           </p>
+
           {filters.types.map((t) => (
             <button
               key={t}
+              type="button"
               onClick={() => pickType(t)}
               className="rounded-full border border-[#e0626a] px-3 py-1 text-xs text-[#e0626a]"
             >
@@ -499,10 +461,12 @@ const CategoryView = ({ category, type }) => {
 
         <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={() => setShowFilters(!showFilters)}
             className="flex items-center gap-2 border border-gray-300 px-3 py-2 text-sm lg:hidden"
           >
-            <SlidersHorizontal size={16} /> Filters
+            <SlidersHorizontal size={16} />
+            Filters
           </button>
 
           <select
@@ -518,9 +482,12 @@ const CategoryView = ({ category, type }) => {
         </div>
       </div>
 
+      {/* Sidebar and product grid */}
       <div className="grid gap-8 lg:grid-cols-[280px_1fr]">
         <aside
-          className={`${showFilters ? "block" : "hidden"} lg:sticky lg:top-4 lg:block lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-4`}
+          className={`${
+            showFilters ? "block" : "hidden"
+          } lg:sticky lg:top-4 lg:block lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:pr-4`}
         >
           <FilterSidebar
             filters={filters}
@@ -530,14 +497,25 @@ const CategoryView = ({ category, type }) => {
         </aside>
 
         {loading ? (
-          <p className="py-24 text-center text-gray-500">Loading products...</p>
+          <p className="py-24 text-center text-gray-500">
+            Loading products...
+          </p>
         ) : error ? (
-          <p className="py-24 text-center text-gray-500">{error}</p>
+          <p className="py-24 text-center text-gray-500">
+            {error}
+          </p>
         ) : products.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-gray-500">
             <p className="text-lg">No products found</p>
+
             <button
-              onClick={() => setFilters(emptyFilters)}
+              type="button"
+              onClick={() =>
+                setFilters({
+                  ...emptyFilters,
+                  types: type ? [type] : [],
+                })
+              }
               className="mt-3 border border-black px-4 py-2 text-sm uppercase tracking-widest text-black"
             >
               Clear filters
@@ -559,8 +537,14 @@ const CategoryPage = () => {
   const { category } = useParams();
   const [params] = useSearchParams();
   const type = (params.get("type") || "").toLowerCase();
-  // the key resets the filters whenever the page or the type changes
-  return <CategoryView key={`${category}|${type}`} category={category} type={type} />;
+
+  return (
+    <CategoryView
+      key={`${category}|${type}`}
+      category={category}
+      type={type}
+    />
+  );
 };
 
 export default CategoryPage;

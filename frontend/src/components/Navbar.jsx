@@ -110,9 +110,23 @@ function Navbar({ user, setUser, setShowAuth }) {
 };
 
   // Convert text into URL
-  const createPath = (text) => {
-    return `/${text.toLowerCase().replace(/\s+/g, "-")}`;
-  };
+  // const createPath = (text) => {
+  //   return `/${text.toLowerCase().replace(/\s+/g, "-")}`;
+  // };
+
+const createPath = (text, category = "") => {
+  const slug = text.toLowerCase().replace(/\s+/g, "-");
+
+  if (text === "Kurta Sets" && category === "MENSWEAR") {
+    return "/category/mens-kurta-sets";
+  }
+
+  if (text === "Kurta Sets" && category === "WOMENSWEAR") {
+    return "/category/kurta-sets";
+  }
+
+  return `/category/${slug}`;
+};
 
   return (
     <nav

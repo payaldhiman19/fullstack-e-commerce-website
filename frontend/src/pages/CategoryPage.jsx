@@ -37,6 +37,34 @@ const subcategoryMap = {
   clutches: { category: "bags", subcategory: "clutches" },
   "tote-bags": { category: "bags", subcategory: "tote bags" },
   potlis: { category: "bags", subcategory: "potlis" },
+
+  // Womenswear — Ethnic Wear
+  "suit-sets": { category: "womenswear", subcategory: "suit sets" },
+  "kurta-sets": { category: "womenswear", subcategory: "kurta sets" },
+  "coord-set": { category: "womenswear", subcategory: "coord set" },
+  "sharara-sets": { category: "womenswear", subcategory: "sharara sets" },
+  "lehenga-sets": { category: "womenswear", subcategory: "lehenga sets" },
+  sarees: { category: "womenswear", subcategory: "sarees" },
+
+  // Womenswear — Western Wear
+  dresses: { category: "womenswear", subcategory: "dresses" },
+  "top-shirts": { category: "womenswear", subcategory: "top & shirt's" },
+
+  // Womenswear — Bottom Wear
+  "cotton-pants": { category: "womenswear", subcategory: "cotton pants" },
+  "linen-pants": { category: "womenswear", subcategory: "linen pants" },
+
+  // Womenswear — Loungewear
+  loungewear: { category: "womenswear", subcategory: "loungewear" },
+
+  // Womenswear — Winterwear
+  "suzani-jackets": { category: "womenswear", subcategory: "suzani jackets" },
+  "velvet-suits": { category: "womenswear", subcategory: "velvet suits" },
+  shawls: { category: "womenswear", subcategory: "shawls" },
+
+  // Menswear
+  shirts: { category: "menswear", subcategory: "shirts" },
+  
 };
 
 const pageQuery = (slug) => {

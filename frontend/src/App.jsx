@@ -90,8 +90,7 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
 
           {/* Every nav link: /new, /womenswear, /tyohar-sale, /ready-to-ship ... */}
-          <Route path="/:category" element={<CategoryPage />} />
-        </Route>
+<Route path="/category/:category" element={<CategoryPage />} />        </Route>
         <Route path="/admin/products" element={<ManageProducts />} />
         <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
         <Route path="/admin/add-product" element={<ProductForm />} />

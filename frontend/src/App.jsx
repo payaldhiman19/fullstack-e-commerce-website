@@ -90,12 +90,12 @@ function App() {
           <Route path="/wishlist" element={<Wishlist />} />
 
           {/* Every nav link: /new, /womenswear, /tyohar-sale, /ready-to-ship ... */}
-<Route path="/category/:category" element={<CategoryPage />} />        </Route>
+         <Route path="/category/:category" element={<CategoryPage />} />        </Route>
         <Route path="/admin/products" element={<ManageProducts />} />
-        <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
-        <Route path="/admin/add-product" element={<ProductForm />} />
-        <Route path="/admin/login" element={<AdminLogin setUser={setUser} />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+         <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
+         <Route path="/admin/add-product" element={<ProductForm />} />
+         <Route path="/admin/login" element={<AdminLogin setUser={setUser} />} />
+         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/add-product" element={<AddProduct />} />
         <Route path="/admin/bulk-import" element={<BulkImport />} />
       </Routes>

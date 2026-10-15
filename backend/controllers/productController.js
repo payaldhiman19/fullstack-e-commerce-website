@@ -1,6 +1,8 @@
 const Product = require("../models/Product");
 const mongoose = require("mongoose");
-const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const escapeRegex = (s) =>s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const toList = (v) => String(v).split(",").map((s) => s.trim()).filter(Boolean);
 const matchAny = (v) => ({
   $in: toList(v).map((x) => new RegExp(`^${escapeRegex(x)}$`, "i")),
@@ -51,33 +53,49 @@ const getProducts = async (req, res) => {
   filter._id = { $in: ids };
 }
 
-    if (category) filter.category = matchAny(category);
+   if (category) filter.category = matchAny(category);
    if (subcategory) filter.subcategory = matchAny(subcategory);
 if (search && search.trim()) {
-  const fields = [
-    "name",
-    "category",
-    "subcategory",
-    "color",
-    "fabric",
-    "pattern",
-    "occasion",
-    "description",
-  ];
+  const keyword = search.trim().toLowerCase();
 
-  filter.$and = search
-    .trim()
-    .split(/\s+/)
-    .map((word) => {
-      const rx = new RegExp(escapeRegex(word), "i");
+  // Map search terms to their product categories.
+  const categoryKeywords = {
+    earrings: ["jewellery", "earrings"],
+    earring: ["jewellery", "earrings"],
+    ear: ["jewellery", "earrings"],
+    kurta: ["womenswear", "kurta"],
+    kurtas: ["womenswear", "kurta"],
+    suit: ["womenswear", "suit"],
+    suits: ["womenswear", "suit"],
+  };
 
-      return {
-        $or: fields.map((field) => ({
-          [field]: rx,
-        })),
-      };
-    });
+  const matchedCategories = categoryKeywords[keyword];
+
+  if (matchedCategories) {
+    // Restrict results to the relevant product type.
+    filter.$or = [
+      { category: { $in: matchedCategories } },
+      { subcategory: { $in: matchedCategories } },
+    ];
+  } else {
+    // General search for other keywords.
+    const rx = new RegExp(escapeRegex(keyword), "i");
+
+    filter.$or = [
+      { name: rx },
+      { category: rx },
+      { subcategory: rx },
+      { description: rx },
+      { color: rx },
+      { fabric: rx },
+      { pattern: rx },
+      { occasion: rx },
+    ];
+  }
 }
+
+
+
     if (color) filter.color = matchAny(color);
     if (pattern) filter.pattern = matchAny(pattern);
     if (occasion) filter.occasion = matchAny(occasion);

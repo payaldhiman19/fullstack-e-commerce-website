@@ -263,13 +263,21 @@ const createPath = (text, category = "") => {
                         {dropdownData[label].map((column) => (
                           <div key={column.title || label}>
                             {column.items.map((item) => (
-                              <Link
-                                key={item}
-                                to={createPath(item)}
-                                className="block px-3 py-2 text-sm tracking-normal text-gray-600 transition hover:bg-gray-50 hover:text-black"
-                              >
-                                {item}
-                              </Link>
+                              // <Link
+                              //   key={item}
+                              //   to={createPath(item)}
+                              //   className="block px-3 py-2 text-sm tracking-normal text-gray-600 transition hover:bg-gray-50 hover:text-black"
+                              // >
+                              //   {item}
+                              // </Link>
+                             <Link
+                               key={item}
+                               to={createPath(item, label)}
+                               className="block px-3 py-2 text-sm tracking-normal text-gray-600 transition hover:bg-gray-50 hover:text-black"
+                             >
+                               {item}
+                             </Link>
+
                             ))}
                           </div>
                         ))}
@@ -389,7 +397,7 @@ const createPath = (text, category = "") => {
                           {column.items.map((item) => (
                             <Link
                               key={item}
-                              to={createPath(item)}
+                              to={createPath(item, label)}
                               onClick={() => setMenuOpen(false)}
                               className="text-sm text-gray-600"
                             >

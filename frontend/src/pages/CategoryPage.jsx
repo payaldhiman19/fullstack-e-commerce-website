@@ -65,7 +65,10 @@ const subcategoryMap = {
 
   // Menswear
   shirts: { category: "menswear", subcategory: "shirts" },
-  
+  "mens-kurta-sets": {
+  category: "menswear",
+  subcategory: "kurta sets",
+},
 };
 
 const pageQuery = (slug) => {

@@ -29,9 +29,10 @@ const orderSchema = new mongoose.Schema(
       pincode: String,
     },
 
-    // payment (generic, no gateway yet)
     paymentMethod: { type: String, enum: ["cod", "online"], default: "cod" },
     paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
+    razorpayOrderId: { type: String, index: true },
+    razorpayPaymentId: String,
 
     // delivery
     orderStatus: {

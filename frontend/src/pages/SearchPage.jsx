@@ -3,14 +3,13 @@ import { useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import api from "../api";
 import ProductCard from "../components/ProductCard";
-
+import { ProductGridSkeleton } from "../components/Skeletons";
 const SearchPage = () => {
   const [params] = useSearchParams();
   const q = params.get("q") || "";
 
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
+const [loading, setLoading] = useState(true);
   const resultsRef = useRef(null);
 
   // Fetch products whenever the search keyword changes
@@ -71,11 +70,12 @@ const SearchPage = () => {
         <p className="py-16 text-center text-gray-500">
           Enter a keyword in the navbar search box.
         </p>
-      ) : loading ? (
-        <p className="py-16 text-center text-gray-500">
-          Searching...
-        </p>
-      ) : products.length === 0 ? (
+      ) :  loading ? (
+  <ProductGridSkeleton
+    count={8}
+    className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 xl:grid-cols-4"
+  />
+) : products.length === 0 ? ( 
         <p className="py-16 text-center text-gray-500">
           No products found for "{q}"
         </p>

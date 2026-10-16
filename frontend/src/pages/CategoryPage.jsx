@@ -4,6 +4,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import { SlidersHorizontal } from "lucide-react";
 import FilterSidebar, { priceRanges } from "../components/FilterSidebar";
 import ProductCard from "../components/ProductCard";
+import { ProductGridSkeleton } from "../components/Skeletons";
 import api from "../api";
 
 const emptyFilters = {
@@ -525,14 +526,11 @@ const CategoryView = ({ category, type }) => {
         </aside>
 
         {loading ? (
-          <p className="py-24 text-center text-gray-500">
-            Loading products...
-          </p>
-        ) : error ? (
-          <p className="py-24 text-center text-gray-500">
-            {error}
-          </p>
-        ) : products.length === 0 ? (
+  <ProductGridSkeleton
+    count={8}
+    className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 xl:grid-cols-4"
+  />
+) : error ? (
           <div className="flex flex-col items-center justify-center py-24 text-gray-500">
             <p className="text-lg">No products found</p>
 

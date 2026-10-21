@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import AdminLogin from "./components/AdminLogin";
 import Navbar from "./components/Navbar";
 import Flashsale from "./components/FlashSale";
@@ -23,7 +23,9 @@ import { WishlistProvider } from "./context/WishlistContext";
 import Wishlist from "./pages/Wishlist";
 import BulkImport from "./components/BulkImport";
 import SearchPage from "./pages/SearchPage";
-
+import MyOrders from "./pages/MyOrders";
+import TrackOrder from "./pages/TrackOrder";
+import ManageOrders from "./components/ManageOrders";
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -83,12 +85,70 @@ function App() {
           <Route path="/terms" element={<Policies />} />
           <Route path="/account" element={<Placeholder title="My Account" />} />
           <Route path="/products/:slug" element={<ProductPage />} />
-          <Route path="/orders" element={<Placeholder title="My Orders" />} />
-          <Route path="/track-orders" element={<Placeholder title="Track Orders" />} />
+           <Route path="/orders" element={<MyOrders />} />
+          <Route path="/orders/:id" element={<TrackOrder />} />
           <Route path="/exchange" element={<Placeholder title="Exchange Request" />} />
           <Route path="/tickets" element={<Placeholder title="Tickets" />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route
+  path="/new"
+  element={<Navigate to="/category/new" replace />}
+/>
 
+<Route
+  path="/tyohar-sale"
+  element={<Navigate to="/category/tyohar-sale" replace />}
+/>
+
+<Route
+  path="/bestsellers"
+  element={<Navigate to="/category/bestsellers" replace />}
+/>
+
+<Route
+  path="/womenswear"
+  element={<Navigate to="/category/womenswear" replace />}
+/>
+
+<Route
+  path="/menswear"
+  element={<Navigate to="/category/menswear" replace />}
+/>
+
+<Route
+  path="/kidswear"
+  element={<Navigate to="/category/kidswear" replace />}
+/>
+
+<Route
+  path="/footwear"
+  element={<Navigate to="/category/footwear" replace />}
+/>
+
+<Route
+  path="/bags"
+  element={<Navigate to="/category/bags" replace />}
+/>
+
+<Route
+  path="/jewellery"
+  element={<Navigate to="/category/jewellery" replace />}
+/>
+
+<Route
+  path="/ready-to-ship"
+  element={<Navigate to="/category/ready-to-ship" replace />}
+/>
+
+<Route
+  path="/luxe"
+  element={<Navigate to="/category/luxe" replace />}
+/>
+
+<Route
+  path="/category/:category"
+  element={<CategoryPage />}
+/>
           {/* Every nav link: /new, /womenswear, /tyohar-sale, /ready-to-ship ... */}
          <Route path="/category/:category" element={<CategoryPage />} />        </Route>
         <Route path="/admin/products" element={<ManageProducts />} />
@@ -98,6 +158,8 @@ function App() {
          <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/add-product" element={<AddProduct />} />
         <Route path="/admin/bulk-import" element={<BulkImport />} />
+        <Route path="/admin/orders" element={<ManageOrders />} />
+
       </Routes>
 
       {/* Cart drawer (opens from the navbar cart icon) */}

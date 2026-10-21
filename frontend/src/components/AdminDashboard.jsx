@@ -6,17 +6,25 @@ import { adminLogout } from "../adminAuth";
 function AdminDashboard() {
   const navigate = useNavigate();
   const [totalProducts, setTotalProducts] = useState(0);
+  const [stats, setStats] = useState({ totalOrders: 0, totalSales: 0, totalUsers: 0 });
 
   useEffect(() => {
-    api.get("/products", { params: { limit: 1 } })
+    api
+      .get("/products", { params: { limit: 1 } })
       .then((res) => setTotalProducts(res.data.total))
       .catch(() => setTotalProducts(0));
+
+    api
+      .get("/admin/orders/stats")
+      .then((res) => setStats(res.data))
+      .catch((err) => console.error("stats error:", err.response?.status, err.response?.data));
   }, []);
 
-const handleLogout = () => {
-  adminLogout();
-  navigate("/admin/login", { replace: true });
-};
+  const handleLogout = () => {
+    adminLogout();
+    navigate("/admin/login", { replace: true });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Header */}
@@ -38,17 +46,19 @@ const handleLogout = () => {
 
           <div className="rounded-lg bg-white p-6 shadow-sm">
             <p className="text-sm text-gray-500">Total Orders</p>
-            <h3 className="mt-2 text-3xl font-bold">0</h3>
+            <h3 className="mt-2 text-3xl font-bold">{stats.totalOrders}</h3>
           </div>
 
           <div className="rounded-lg bg-white p-6 shadow-sm">
             <p className="text-sm text-gray-500">Total Users</p>
-            <h3 className="mt-2 text-3xl font-bold">0</h3>
+            <h3 className="mt-2 text-3xl font-bold">{stats.totalUsers}</h3>
           </div>
 
           <div className="rounded-lg bg-white p-6 shadow-sm">
             <p className="text-sm text-gray-500">Total Sales</p>
-            <h3 className="mt-2 text-3xl font-bold">₹0</h3>
+            <h3 className="mt-2 text-3xl font-bold">
+              ₹{Number(stats.totalSales).toLocaleString("en-IN")}
+            </h3>
           </div>
         </div>
 
@@ -69,18 +79,19 @@ const handleLogout = () => {
             >
               + Add Product
             </button>
-             <button
-             onClick={() => navigate("/admin/bulk-import")}
-             className="rounded-lg border px-5 py-3">
-               Bulk Import
-               </button>
 
-            <button disabled className="rounded-lg border px-5 py-3 text-gray-400">
-              Manage Orders (soon)
+            <button
+              onClick={() => navigate("/admin/bulk-import")}
+              className="rounded-lg border px-5 py-3"
+            >
+              Bulk Import
             </button>
 
-            <button disabled className="rounded-lg border px-5 py-3 text-gray-400">
-              Manage Users (soon)
+            <button
+              onClick={() => navigate("/admin/orders")}
+              className="rounded-lg border px-5 py-3"
+            >
+              Manage Orders
             </button>
           </div>
         </div>

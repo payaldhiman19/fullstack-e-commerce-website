@@ -4,12 +4,11 @@ import { User } from "lucide-react";
 
 const links = [
   { label: "My Orders", to: "/orders" },
-  { label: "Track Orders", to: "/track-orders" },
+  { label: "Track Orders", to: "/orders" },
   { label: "Exchange Request", to: "/exchange" },
   { label: "Tickets", to: "/tickets" },
   { label: "Help / Support", to: "/contact" },
 ];
-
 const AccountMenu = ({ user, setUser, setShowAuth }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);

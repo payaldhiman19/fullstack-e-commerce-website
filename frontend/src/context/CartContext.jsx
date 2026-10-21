@@ -13,8 +13,7 @@ const loadCart = () => {
 export const CartProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState(loadCart);
-
-  // keep the cart after refresh
+//Whenever items changes, the effect saves the latest cart to localStorage.
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
@@ -24,18 +23,19 @@ export const CartProvider = ({ children }) => {
 
   // each cart line is one product in one size
   const addToCart = (product, size) => {
-    const stock = product.sizes?.find((s) => s.size === size)?.stock ?? 1;
+    const stock = product.sizes?.find((s) => s.size === size)?.stock ?? 1;//check stock
     const lineId = `${product._id}-${size}`;
 
-    setItems((prev) => {
+    setItems((prev) => {//if already in cart
       const found = prev.find((i) => i.lineId === lineId);
       if (found) {
         return prev.map((i) =>
-          i.lineId === lineId ? { ...i, qty: Math.min(i.qty + 1, stock) } : i
+          i.lineId === lineId ? { ...i, qty: Math.min(i.qty + 1, stock) } : i  //increases the count
         );
       }
+      //if not add new item in cart
       return [
-        ...prev,
+        ...prev,   //copies the existing items and new item with quantity of 1
         {
           lineId,
           _id: product._id,
@@ -50,9 +50,9 @@ export const CartProvider = ({ children }) => {
         },
       ];
     });
-    setIsOpen(true);
+    setIsOpen(true);   // after adding cartdrawerr open automatically
   };
-
+//adding and removing from cart   ---delta is quantity change    min prevents exceeing the maxstock
   const updateQty = (lineId, delta) =>
     setItems((prev) =>
       prev
@@ -61,14 +61,13 @@ export const CartProvider = ({ children }) => {
             ? { ...i, qty: Math.min(i.qty + delta, i.maxStock) }
             : i
         )
-        .filter((i) => i.qty > 0)
+        .filter((i) => i.qty > 0)   //removes any quantity whose quantity reached zero.
     );
 
   const removeItem = (lineId) =>
-    setItems((prev) => prev.filter((i) => i.lineId !== lineId));
+    setItems((prev) => prev.filter((i) => i.lineId !== lineId));  //keeps only the items whose IDs don't match the selected item.
 
   const clearCart = () => setItems([]);
-
   const count = items.reduce((sum, i) => sum + i.qty, 0);
   const subtotal = items.reduce((sum, i) => sum + i.price * i.qty, 0);
 

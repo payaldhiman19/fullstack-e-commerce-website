@@ -22,3 +22,49 @@ label[for] {
 button:disabled {
   cursor: not-allowed;
 }
+
+
+
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: clip;
+}
+
+/* make sure no leftover Vite defaults narrow the page */
+body {
+  display: block;
+  place-items: normal;
+}
+
+#root {
+  display: block;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.toast-in { animation: toastIn 0.25s ease both; }
+@media (prefers-reduced-motion: reduce) {
+  .toast-in { animation: none; }
+}

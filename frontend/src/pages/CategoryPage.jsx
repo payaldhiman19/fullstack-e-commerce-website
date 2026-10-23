@@ -1,8 +1,7 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { SlidersHorizontal } from "lucide-react";
-import FilterSidebar, { priceRanges } from "../components/FilterSidebar";
+import FilterSidebar, { priceRanges } from "../components/FilterSidebar"
 import ProductCard from "../components/ProductCard";
 import { ProductGridSkeleton } from "../components/Skeletons";
 import api from "../api";

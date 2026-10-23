@@ -249,14 +249,14 @@ const CartDrawer = () => {
       {/* Overlay */}
       <div
         onClick={handleClose}
-        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[110] bg-black/40 transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
       />
 
       {/* Drawer */}
       <aside
-        className={`fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col bg-white shadow-xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-[120] flex h-full w-full max-w-md flex-col bg-white shadow-xl transition-transform duration-300 ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

@@ -1,4 +1,10 @@
+import { useEffect } from "react";
+
 function AboutUs() {
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#fffaf7] px-6 py-16">
       <div className="mx-auto max-w-4xl">

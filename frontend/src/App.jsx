@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState ,useEffect} from "react";
+import { useLocation } from "react-router-dom";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import AdminLogin from "./components/AdminLogin";
 import Navbar from "./components/Navbar";
@@ -26,6 +27,7 @@ import SearchPage from "./pages/SearchPage";
 import MyOrders from "./pages/MyOrders";
 import TrackOrder from "./pages/TrackOrder";
 import ManageOrders from "./components/ManageOrders";
+import WishlistToast from "./components/WishlistToast"
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -54,9 +56,16 @@ function App() {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
   });
-
   const [showAuth, setShowAuth] = useState(false);
+     const { pathname, search } = useLocation();
 
+useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant",
+  });
+}, [pathname, search]);
   return (
       <WishlistProvider>
 
@@ -164,7 +173,7 @@ function App() {
 
       {/* Cart drawer (opens from the navbar cart icon) */}
       <CartDrawer />
-
+      <WishlistToast /> 
       {/* Login / Signup Modal */}
       {showAuth && (
         <AuthModal onClose={() => setShowAuth(false)} setUser={setUser} />

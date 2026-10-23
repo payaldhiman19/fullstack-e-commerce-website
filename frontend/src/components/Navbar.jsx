@@ -109,10 +109,6 @@ function Navbar({ user, setUser, setShowAuth }) {
   }
 };
 
-  // Convert text into URL
-  // const createPath = (text) => {
-  //   return `/${text.toLowerCase().replace(/\s+/g, "-")}`;
-  // };
 
 const createPath = (text, category = "") => {
   const slug = text.toLowerCase().replace(/\s+/g, "-");
@@ -140,7 +136,7 @@ const createPath = (text, category = "") => {
         <div className="flex items-center">
           {/* Mobile menu */}
           <button
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
@@ -219,15 +215,15 @@ const createPath = (text, category = "") => {
 
       {/* ================= DESKTOP NAV ================= */}
 
-      <div className="hidden border-t md:block">
-        <div className="relative flex justify-center gap-5 py-3 text-sm tracking-[0.18em] text-gray-700 lg:gap-6">
-          {navLinks.map((label) => {
+<div className="hidden border-t lg:block">
+  <div className="relative flex flex-nowrap items-center justify-center gap-4 py-3 text-xs tracking-[0.1em] text-gray-700 xl:gap-5 xl:text-[13px] xl:tracking-[0.14em] 2xl:gap-7 2xl:text-sm 2xl:tracking-[0.18em]">   
+  {navLinks.map((label) => {
             const hasDropdown = dropdownData[label];
 
             return (
               <div
                 key={label}
-                className="relative h-full"
+                className="relative h-full shrink-0"
                 onMouseEnter={() => {
                   if (hasDropdown) {
                     setActiveMenu(label);
@@ -240,8 +236,7 @@ const createPath = (text, category = "") => {
 
                 <Link
                   to={createPath(label)}
-                  className="relative block pb-2 transition-colors hover:text-black"
-                >
+  className="relative block whitespace-nowrap pb-2 transition-colors hover:text-black">
                   {label}
 
                   {/* BLACK HOVER LINE */}
@@ -256,25 +251,16 @@ const createPath = (text, category = "") => {
                   hasDropdown &&
                   label !== "WOMENSWEAR" && (
                     <div
-                      className="absolute left-0 top-full z-50 w-40 border-t bg-white shadow-sm"
-                      onMouseEnter={() => setActiveMenu(label)}
+className="absolute left-0 top-full z-50 w-max min-w-0 border-t border-gray-100 bg-white shadow-lg"                      onMouseEnter={() => setActiveMenu(label)}
                     >
-                      <div className="py-2">
+                      <div className="py-0">
                         {dropdownData[label].map((column) => (
                           <div key={column.title || label}>
                             {column.items.map((item) => (
-                              // <Link
-                              //   key={item}
-                              //   to={createPath(item)}
-                              //   className="block px-3 py-2 text-sm tracking-normal text-gray-600 transition hover:bg-gray-50 hover:text-black"
-                              // >
-                              //   {item}
-                              // </Link>
                              <Link
                                key={item}
                                to={createPath(item, label)}
-                               className="block px-3 py-2 text-sm tracking-normal text-gray-600 transition hover:bg-gray-50 hover:text-black"
-                             >
+className="block whitespace-nowrap px-2 py-2 text-center text-sm tracking-normal text-gray-600 transition hover:bg-gray-50 hover:text-black"                             >
                                {item}
                              </Link>
 
@@ -324,7 +310,7 @@ const createPath = (text, category = "") => {
       </div>
 
       {menuOpen && (
-        <div className="border-t bg-white px-4 py-4 md:hidden">
+        <div className="border-t bg-white px-4 py-4 lg:hidden">
           {/* Search box inside mobile menu */}
           <form
             onSubmit={handleSearch}

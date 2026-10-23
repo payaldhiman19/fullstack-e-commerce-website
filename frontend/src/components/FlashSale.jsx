@@ -38,15 +38,15 @@ return {
   }, []);
 
   return (
-<div className="w-full min-h-[20px] sm:min-h-[50px] bg-[#85866A] text-white flex items-center justify-center gap-3 sm:gap-6 px-2 sm:px-4">  <div className="flex items-center gap-1 sm:gap-3 whitespace-nowrap">
+<div className="w-full min-h-[20px] sm:min-h-[50px] bg-[#85866A] text-white flex items-center justify-center gap-3 sm:gap-6 px-2 sm:px-4">  
+  <div className="flex items-center gap-1 sm:gap-3 whitespace-nowrap">
       <strong className="text-sm sm:text-lg md:text-[23px] font-bold">
       Flash Sale: Buy 1 Get 1 Free
       </strong>
-    <span className="text-[10px] sm:text-sm md:text-base">
+    <span className="text-[8px] sm:text-sm md:text-base">
          (Grab Fast)
       </span>
     </div>
-    {/* timer */}
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
     <div className="flex flex-col items-center leading-none">

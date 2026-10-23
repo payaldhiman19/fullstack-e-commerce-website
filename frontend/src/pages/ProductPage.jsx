@@ -16,6 +16,7 @@ function Accordion({ title, children }) {
         type="button"
         onClick={() => setOpen((previous) => !previous)}
         className="flex w-full items-center justify-between text-left text-sm uppercase tracking-widest"
+        aria-expanded={open}
       >
         <span>{title}</span>
         <span className="text-xl">{open ? "−" : "+"}</span>
@@ -55,6 +56,7 @@ function ProductPage() {
     setSelectedSize("");
     setRelated([]);
     setImageViewerOpen(false);
+    setSizeChartOpen(false);
     setDeliveryMessage("");
 
     api
@@ -119,7 +121,7 @@ function ProductPage() {
     };
   }, [product]);
 
-  // Keyboard controls for the full-screen image viewer
+  // Full-screen image viewer keyboard controls
   useEffect(() => {
     if (!imageViewerOpen || !product) return;
 
@@ -145,7 +147,6 @@ function ProductPage() {
 
     window.addEventListener("keydown", handleKeyDown);
 
-    // Prevent background scrolling while the viewer is open
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -264,15 +265,11 @@ function ProductPage() {
 
   const handleAddToCart = () => {
     if (!selectedSize || allSoldOut) return;
-
     addToCart(product, selectedSize);
   };
 
-  // This adds the product to the cart.
-  // Connect your checkout route here to make Buy Now go directly to checkout.
   const handleBuyNow = () => {
     if (!selectedSize || allSoldOut) return;
-
     addToCart(product, selectedSize);
   };
 
@@ -291,31 +288,38 @@ function ProductPage() {
     <main className="w-full bg-white">
       <div className="mx-auto max-w-[1600px] px-4 py-5 sm:px-6 lg:px-10 lg:py-8">
         {/* Breadcrumb */}
-        <nav
-          aria-label="Breadcrumb"
-          className="mb-6 flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-gray-500"
-        >
-          <Link to="/" className="hover:text-black">
-            Home
-          </Link>
+      <nav
+  aria-label="Breadcrumb"
+  className="mb-6 flex flex-wrap items-center gap-2 text-xs uppercase tracking-wider text-gray-500"
+>
+  <Link to="/" className="hover:text-black">
+    Home
+  </Link>
 
-          <span>/</span>
+  <span>/</span>
 
-          <span>{category}</span>
+  <Link
+    to={`/category/${encodeURIComponent(
+      String(category || "").toLowerCase().replace(/\s+/g, "-")
+    )}`}
+    className="hover:text-black"
+  >
+    {category}
+  </Link>
 
-          <span>/</span>
+  <span>/</span>
 
-          <span className="line-clamp-1 text-gray-800">{name}</span>
-        </nav>
+  <span className="line-clamp-1 text-gray-800">{name}</span>
+</nav>
 
         {/* Main product layout */}
-        <div className="grid items-start gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:gap-12 xl:gap-16">
-          {/* LEFT: Sticky image gallery */}
-          <section className="min-w-0 lg:sticky lg:top-24 lg:self-start">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-10 xl:gap-14">
+          {/* LEFT: Sticky product image gallery */}
+          <section className="min-w-0 self-start lg:sticky lg:top-24 lg:h-fit">
             <div className="flex flex-col-reverse gap-3 sm:flex-row sm:gap-4">
               {/* Image thumbnails */}
               {productImages.length > 1 && (
-                <div className="flex gap-2 overflow-x-auto pb-1 sm:w-[84px] sm:shrink-0 sm:flex-col sm:overflow-x-hidden sm:overflow-y-auto sm:pb-0 lg:max-h-[calc(100vh-7rem)]">
+                <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1 sm:w-[84px] sm:shrink-0 sm:flex-col sm:overflow-x-hidden sm:overflow-y-auto sm:pb-0 lg:max-h-full">
                   {productImages.map((image, index) => (
                     <button
                       type="button"
@@ -340,23 +344,23 @@ function ProductPage() {
                 </div>
               )}
 
-              {/* Main image - click to open full screen */}
-              <div className="relative min-w-0 flex-1 overflow-hidden bg-[#f7f5f2]">
+              {/* Main image */}
+              <div className="relative min-w-0 flex-1  overflow-hidden bg-[#f7f5f2] ">
                 {activeImageUrl ? (
                   <button
                     type="button"
                     onClick={() => setImageViewerOpen(true)}
                     aria-label="Open full-screen product image"
-                    className="block w-full cursor-zoom-in"
+                    className="block h-full w-full cursor-zoom-in"
                   >
                     <img
                       src={activeImageUrl}
                       alt={name}
-                      className="aspect-[3/4] w-full object-cover"
+                      className="aspect-[3/4] w-full object-cover lg:aspect-auto lg:h-full lg:w-full lg:object-contain"
                     />
                   </button>
                 ) : (
-                  <div className="flex aspect-[3/4] items-center justify-center text-sm text-gray-400">
+                  <div className="flex aspect-[3/4] items-center justify-center text-sm text-gray-400 lg:h-full lg:aspect-auto">
                     Product image unavailable
                   </div>
                 )}
@@ -400,9 +404,9 @@ function ProductPage() {
             </div>
           </section>
 
-          {/* RIGHT: Product information scrolls with the page */}
-          <section className="min-w-0">
-            <p className="text-xs uppercase tracking-[0.3em] text-gray-500">
+          {/* RIGHT: Independently scrollable product details */}
+             <section className="min-w-0 lg:pr-3">
+              <p className="text-xs uppercase tracking-[0.3em] text-gray-500">
               {brand || "RIVANA"}
             </p>
 
@@ -648,7 +652,6 @@ function ProductPage() {
                           <td className="w-1/2 py-3 pr-4 text-gray-500">
                             {label}
                           </td>
-
                           <td className="py-3 text-gray-800">{value}</td>
                         </tr>
                       ))}
@@ -706,7 +709,6 @@ function ProductPage() {
           aria-label="Product image viewer"
           onClick={() => setImageViewerOpen(false)}
         >
-          {/* Close button */}
           <button
             type="button"
             aria-label="Close image viewer"
@@ -716,7 +718,6 @@ function ProductPage() {
             ×
           </button>
 
-          {/* Previous image */}
           {productImages.length > 1 && (
             <button
               type="button"
@@ -731,7 +732,6 @@ function ProductPage() {
             </button>
           )}
 
-          {/* Full-size image */}
           <div
             className="flex h-full w-full items-center justify-center px-16 py-16 sm:px-24"
             onClick={(event) => event.stopPropagation()}
@@ -743,7 +743,6 @@ function ProductPage() {
             />
           </div>
 
-          {/* Next image */}
           {productImages.length > 1 && (
             <button
               type="button"
@@ -758,7 +757,6 @@ function ProductPage() {
             </button>
           )}
 
-          {/* Image counter */}
           <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white px-5 py-2 text-sm text-gray-700 shadow">
             {activeImage + 1} / {productImages.length}
           </div>
@@ -825,11 +823,9 @@ function ProductPage() {
                         className="border-b border-gray-100"
                       >
                         <td className="py-3 pr-3">{size.size}</td>
-
                         <td className="py-3 pr-3">
                           {soldOut ? "Sold out" : "Available"}
                         </td>
-
                         <td className="py-3 text-right">
                           <button
                             type="button"

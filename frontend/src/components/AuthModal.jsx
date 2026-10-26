@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+// import { GoogleLogin } from "@react-oauth/google";
 
 function AuthModal({ onClose, setUser }) {
   const [isLogin, setIsLogin] = useState(true);
@@ -79,29 +79,29 @@ function AuthModal({ onClose, setUser }) {
 
   // Google Login / Signup
   //send token to backend it never send emailor name coz frontend could fake those
-  const handleGoogleSuccess = async (credentialResponse) => {
-    try {
-      const response = await fetch("http://localhost:5000/api/auth/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ credential: credentialResponse.credential }),
-      });
+  // const handleGoogleSuccess = async (credentialResponse) => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/auth/google", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ credential: credentialResponse.credential }),
+  //     });
 
-      const data = await response.json();
+  //     const data = await response.json();
 
-      if (response.ok) {
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setUser(data.user);
-        onClose();
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error("Google auth error:", error);
-      alert("Unable to connect to server");
-    }
-  };
+  //     if (response.ok) {
+  //       localStorage.setItem("token", data.token);
+  //       localStorage.setItem("user", JSON.stringify(data.user));
+  //       setUser(data.user);
+  //       onClose();
+  //     } else {
+  //       alert(data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Google auth error:", error);
+  //     alert("Unable to connect to server");
+  //   }
+  // };
 
   // Switch Login <-> Signup
   const switchMode = () => {
@@ -175,16 +175,6 @@ function AuthModal({ onClose, setUser }) {
             <div className="h-px flex-1 bg-gray-300"></div>
             <span className="text-sm text-gray-500">OR</span>
             <div className="h-px flex-1 bg-gray-300"></div>
-          </div>
-
-          {/* GOOGLE LOGIN */}
-          <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={() => alert("Google sign-in failed")}
-              text="continue_with"
-              width="336"
-            />
           </div>
         </form>
 

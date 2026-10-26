@@ -10,7 +10,7 @@ const load = () => {
   }
 };
 
-export const WishlistProvider = ({ children }) => {
+export const WishlistProvider = ({ children,user }) => {
   const [ids, setIds] = useState(load);
   const [toast, setToast] = useState(null); // NEW: the message to show
 
@@ -21,7 +21,15 @@ export const WishlistProvider = ({ children }) => {
   const isWished = (id) => ids.includes(id);
 
   const toggleWish = (id) =>{
-    const added=!ids.includes(id);
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (!user) {
+    setToast({
+      key:Date.now(),
+      loginRequired:true,
+    });
+    return;
+  }
+    const added = !ids.includes(id);
 
     setIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]

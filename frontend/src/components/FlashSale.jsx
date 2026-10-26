@@ -38,49 +38,46 @@ return {
   }, []);
 
   return (
-<div className="w-full min-h-[20px] sm:min-h-[50px] bg-[#85866A] text-white flex items-center justify-center gap-3 sm:gap-6 px-2 sm:px-4">  
+<div className="w-full min-h-[20px] sm:min-h-[50px] bg-[#85866A] text-white flex items-center justify-center gap-4 sm:gap-8 px-2 sm:px-4">  
   <div className="flex items-center gap-1 sm:gap-3 whitespace-nowrap">
-      <strong className="text-sm sm:text-lg md:text-[23px] font-bold">
+      <strong className="text-sm sm:text-lg md:text-[18px] font-bold">
       Flash Sale: Buy 1 Get 1 Free
       </strong>
-    <span className="text-[8px] sm:text-sm md:text-base">
-         (Grab Fast)
-      </span>
     </div>
       <div className="flex items-center gap-1 sm:gap-2 shrink-0">
 
-    <div className="flex flex-col items-center leading-none">
-      <strong className="text-lg sm:text-2xl md:text-[30px]">
+    <div className="flex flex-col items-center leading-none pb-2">
+      <strong className="text-lg sm:text-xl md:text-[20px]">
         {String(time.hours).padStart(2, "0")}
       </strong>
-      <small className="text-[6px] sm:text-[8px] md:text-[10px]">
+      <small className="text-[6px] sm:text-[8px] md:text-[8px]">
           HRS
         </small>
       </div>
-    <span className="text-lg sm:text-2xl md:text-[28px] font-bold">
+    <span className="text-lg sm:text-xl md:text-[18px] font-bold">
      :
    </span>
    {/* minutes */}
-       <div className="flex flex-col items-center leading-none">
-      <strong className="text-lg sm:text-2xl md:text-[30px]">
+       <div className="flex flex-col items-center leading-none pb-2">
+      <strong className="text-lg sm:text-xl md:text-[20px]">
         {String(time.minutes).padStart(2, "0")}
       </strong>
 
-      <small className="text-[6px] sm:text-[8px] md:text-[10px]">
+      <small className="text-[6px] sm:text-[8px] md:text-[8px]">
         MINS
       </small>
     </div>
 
-    <span className="text-lg sm:text-2xl md:text-[28px] font-bold">
+    <span className="text-lg sm:text-xl md:text-[18px] font-bold">
       :
     </span>
 
-    <div className="flex flex-col items-center leading-none">
-      <strong className="text-lg sm:text-2xl md:text-[30px]">
+    <div className="flex flex-col items-center leading-none pb-2">
+      <strong className="text-lg sm:text-xl md:text-[20px]">
         {String(time.seconds).padStart(2, "0")}
       </strong>
 
-      <small className="text-[6px] sm:text-[8px] md:text-[10px]">
+      <small className="text-[6px] sm:text-[8px] md:text-[8px]">
         SECS
       </small>
     </div>

@@ -28,6 +28,7 @@ import MyOrders from "./pages/MyOrders";
 import TrackOrder from "./pages/TrackOrder";
 import ManageOrders from "./components/ManageOrders";
 import WishlistToast from "./components/WishlistToast"
+import CustomerReviews from "./pages/CustomerReviews";
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -67,7 +68,7 @@ useEffect(() => {
   });
 }, [pathname, search]);
   return (
-      <WishlistProvider>
+      <WishlistProvider user={user}>
 
       <Routes>
         {/* Customer pages (with navbar + footer) */}
@@ -99,6 +100,7 @@ useEffect(() => {
           <Route path="/exchange" element={<Placeholder title="Exchange Request" />} />
           <Route path="/tickets" element={<Placeholder title="Tickets" />} />
           <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/reviews" element={<CustomerReviews />} />
           <Route
   path="/new"
   element={<Navigate to="/category/new" replace />}
@@ -171,10 +173,8 @@ useEffect(() => {
 
       </Routes>
 
-      {/* Cart drawer (opens from the navbar cart icon) */}
       <CartDrawer />
-      <WishlistToast /> 
-      {/* Login / Signup Modal */}
+<WishlistToast setShowAuth={setShowAuth} />      {/* Login / Signup Modal */}
       {showAuth && (
         <AuthModal onClose={() => setShowAuth(false)} setUser={setUser} />
       )}

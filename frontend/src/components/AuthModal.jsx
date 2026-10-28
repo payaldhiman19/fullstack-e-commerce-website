@@ -45,12 +45,11 @@ function AuthModal({ onClose, setUser }) {
         if (isLogin) {
           // Save JWT token
           localStorage.setItem("token", data.token);
-
-          // Save user information
-          localStorage.setItem("user", JSON.stringify(data.user));
-
-          // Update React state immediately
-          setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        
+        window.dispatchEvent(new Event("auth-changed"));
+        
+        setUser(data.user);
 
           // Close modal
           onClose();

@@ -31,13 +31,16 @@ const AccountMenu = ({ user, setUser, setShowAuth }) => {
     setOpen((o) => !o);
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    setUser(null);
-    setOpen(false);
-    navigate("/");
-  };
+ const logout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  window.dispatchEvent(new Event("auth-changed"));
+
+  setUser(null);
+  setOpen(false);
+  navigate("/");
+};
 
   return (
     <div ref={ref} className="relative">

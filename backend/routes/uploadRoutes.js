@@ -6,7 +6,6 @@ const streamifier = require("streamifier");
 const cloudinary = require("cloudinary").v2;
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
-// Tell us at startup if any Cloudinary value is missing
 const missing = ["CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET"]
   .filter((name) => !process.env[name]);
 if (missing.length > 0) {

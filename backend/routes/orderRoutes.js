@@ -11,10 +11,12 @@ const router = express.Router();
 router.get("/my", protect, async (req, res) => {
   try {
     const orders = await Order.find({
-      user: req.user._id,
-      $or: [{ paymentMethod: "cod" }, { paymentStatus: "paid" }],
-    }).sort({ createdAt: -1 });
-
+  user: req.user.userId,
+  $or: [
+    { paymentMethod: "cod" },
+    { paymentStatus: "paid" },
+  ],
+}).sort({ createdAt: -1 });
     res.json(orders);
   } catch (err) {
     console.error(err);
@@ -68,10 +70,9 @@ router.get("/:id", protect, async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id))
       return res.status(404).json({ error: "Order not found" });
-
-    const order = await Order.findOne({ _id: req.params.id, user: req.user._id });
+    
+    const order = await Order.findOne({ _id: req.params.id, user: req.user.userId });
     if (!order) return res.status(404).json({ error: "Order not found" });
-
     res.json(order);
   } catch (err) {
     console.error(err);

@@ -29,6 +29,7 @@ import TrackOrder from "./pages/TrackOrder";
 import ManageOrders from "./components/ManageOrders";
 import WishlistToast from "./components/WishlistToast"
 import CustomerReviews from "./pages/CustomerReviews";
+import AdminLayout from "./components/AdminLayout";
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -156,21 +157,21 @@ useEffect(() => {
   element={<Navigate to="/category/luxe" replace />}
 />
 
-<Route
-  path="/category/:category"
-  element={<CategoryPage />}
-/>
-          {/* Every nav link: /new, /womenswear, /tyohar-sale, /ready-to-ship ... */}
-         <Route path="/category/:category" element={<CategoryPage />} />        </Route>
-        <Route path="/admin/products" element={<ManageProducts />} />
-         <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
-         <Route path="/admin/add-product" element={<ProductForm />} />
-         <Route path="/admin/login" element={<AdminLogin setUser={setUser} />} />
-         <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/add-product" element={<AddProduct />} />
-        <Route path="/admin/bulk-import" element={<BulkImport />} />
-        <Route path="/admin/orders" element={<ManageOrders />} />
 
+          {/* Every nav link: /new, /womenswear, /tyohar-sale, /ready-to-ship ... */}
+        <Route path="/category/:category" element={<CategoryPage />} />        
+        </Route>
+
+         {/* <Route path="/admin/add-product" element={<ProductForm />} /> */}
+         <Route path="/admin/login" element={<AdminLogin setUser={setUser} />} />
+         <Route element={<AdminLayout />}>
+         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/add-product" element={<ProductForm />}/>
+        <Route path="/admin/bulk-import" element={<BulkImport />} />
+        <Route path="/admin/products" element={<ManageProducts />} />
+        <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
+        <Route path="/admin/orders" element={<ManageOrders />} />
+</Route>
       </Routes>
 
       <CartDrawer />

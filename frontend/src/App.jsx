@@ -30,6 +30,8 @@ import ManageOrders from "./components/ManageOrders";
 import WishlistToast from "./components/WishlistToast"
 import CustomerReviews from "./pages/CustomerReviews";
 import AdminLayout from "./components/AdminLayout";
+import MediaLibrary from "./components/MediaLibrary";
+
 
 // Temporary page for routes you haven't built yet
 const Placeholder = ({ title }) => (
@@ -171,6 +173,7 @@ useEffect(() => {
         <Route path="/admin/products" element={<ManageProducts />} />
         <Route path="/admin/edit-product/:slug" element={<ProductForm />} />
         <Route path="/admin/orders" element={<ManageOrders />} />
+        <Route path="/admin/media" element={<MediaLibrary />} />
 </Route>
       </Routes>
 

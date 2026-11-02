@@ -126,7 +126,6 @@ export default function AdminLayout() {
   />
 </aside>
 
-      {/* Mobile sidebar */}
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetContent side="left" className="w-72 p-0">
           <SheetTitle className="sr-only">Admin navigation</SheetTitle>
@@ -140,7 +139,6 @@ export default function AdminLayout() {
         </SheetContent>
       </Sheet>
 
-      {/* Main content */}
       <div className="min-w-0 flex-1">
         <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b bg-background/95 px-4 backdrop-blur md:px-8">
           <Button

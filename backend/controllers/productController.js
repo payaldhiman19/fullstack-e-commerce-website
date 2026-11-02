@@ -5,21 +5,18 @@ const mongoose = require("mongoose");
 const escapeRegex = (value) =>
   String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-// Convert comma-separated values into an array
 const toList = (value) =>
   String(value)
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
 
-// Case-insensitive exact matching
 const matchAny = (value) => ({
   $in: toList(value).map(
     (item) => new RegExp(`^${escapeRegex(item)}$`, "i")
   ),
 });
 
-// Handle common Mongoose errors
 const handleError = (res, error, fallbackMessage) => {
   if (error.name === "ValidationError") {
     return res.status(400).json({ message: error.message });
@@ -92,8 +89,6 @@ const getProducts = async (req, res) => {
     }
 
     // General search across product fields.
-    // Searching "kurta" can return men's and women's kurtas.
-    // Category pages remain separated by their category filter.
     if (search && search.trim()) {
       const keyword = escapeRegex(search.trim());
 
@@ -171,8 +166,6 @@ const getProducts = async (req, res) => {
         $gt: 0,
       };
     }
-
-    // Size and stock filters
     if (size) {
       filter.sizes = {
         $elemMatch: {
@@ -309,7 +302,6 @@ const updateProduct = async (req, res) => {
   }
 };
 
-// ---------------- DELETE PRODUCT ----------------
 
 const deleteProduct = async (req, res) => {
   try {

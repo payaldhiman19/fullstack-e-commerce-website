@@ -99,7 +99,6 @@ const googleLogin=async(req,res)=>{
 if (!email_verified) {
       return res.status(400).json({ message: "Google email not verified" });
     }
-//find or create user
 let user=await User.findOne({email});
 if(!user){
   //then create
@@ -109,8 +108,6 @@ if(!user){
   user.googleId=sub;
   await user.save();
 }
-
-      // same payload as normal login
     const token = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET,

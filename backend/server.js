@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const { router: paymentRouter } = require("./routes/payment");
 const orderRoutes = require("./routes/orderRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
+const contactRoutes =require( "./routes/contactRoutes");
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use("/api/products", productRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/payment", paymentRouter);
 app.use("/api/orders", orderRoutes);
+app.use("/api/contact", contactRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

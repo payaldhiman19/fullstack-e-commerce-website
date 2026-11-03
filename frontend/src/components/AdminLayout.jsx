@@ -11,6 +11,7 @@ import {
   X,
   Images,
   PanelLeft,
+  MessageSquare,
 } from "lucide-react";
 
 import { adminLogout } from "../adminAuth";
@@ -29,6 +30,7 @@ const links = [
   { to: "/admin/add-product", label: "Add Product", icon: Plus },
   { to: "/admin/bulk-import", label: "Bulk Import", icon: Upload },
   { to: "/admin/orders", label: "Manage Orders", icon: ClipboardList },
+  { to: "/admin/messages", label: "Customer Messages", icon: MessageSquare },
   { to: "/admin/media", label: "Media Library", icon: Images },
 ];
 
